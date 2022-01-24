@@ -12,6 +12,9 @@ def main():
     begin { Main }
         y := 7;
         x := (y + 3) * 3;
+        readln(y, x);
+        writeln("Hello \n");
+        writeln(x);
     end.  { Main }
 
 

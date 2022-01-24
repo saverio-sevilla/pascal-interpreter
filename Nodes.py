@@ -137,6 +137,11 @@ class Writeln(AST):
         self.token = token
         self.token_list = token_list
 
+class Readln(AST):
+    def __init__(self, token: Token, token_list):
+        self.token = token
+        self.token_list = token_list
+
 
 class NoOp(AST):
     pass

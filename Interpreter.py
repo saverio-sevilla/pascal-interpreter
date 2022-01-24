@@ -115,7 +115,14 @@ class Interpreter(NodeVisitor):
             if token.type is TokenType.STRING:
                 print(token.value, end = "")
             elif token.type is TokenType.ID:
-                print(self.GLOBAL_MEMORY.get(token.value), end = "")
+                ar = self.call_stack.peek()
+                var_value = ar[token.value]
+                print(var_value, end = "")
+
+    def visit_Readln(self, node: Readln):
+        for token in node.token_list:
+            ar = self.call_stack.peek()
+            ar[token.value] = input("Enter an input: ")
 
     def visit_Condition(self, node: Condition):
         if self.visit(node.condition_node) is True:

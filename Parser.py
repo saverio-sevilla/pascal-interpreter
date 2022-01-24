@@ -218,6 +218,8 @@ class Parser(object):
             node = self.compound_statement()
         elif self.current_token.type == TokenType.WRITELN:
             node = self.writeln_statement()
+        elif self.current_token.type == TokenType.READLN:
+            node = self.readln_statement()
         elif self.current_token.type == TokenType.IF:
             node = self.conditional_statement()
         elif self.current_token.type == TokenType.WHILE:
@@ -327,6 +329,24 @@ class Parser(object):
         self.eat(TokenType.RPAREN)
 
         return Writeln(token=token, token_list=token_list)
+
+    def readln_statement(self):
+        token = self.current_token
+        token_list = []
+        self.eat(TokenType.READLN)
+        self.eat(TokenType.LPAREN)
+
+        token_list.append(self.current_token)
+        self.eat(TokenType.ID)
+
+        while self.current_token.type == TokenType.COMMA:
+            self.eat(TokenType.COMMA)
+            token_list.append(self.current_token)
+            self.eat(TokenType.ID)
+
+        self.eat(TokenType.RPAREN)
+
+        return Readln(token=token, token_list=token_list)
 
 
     def assignment_statement(self):

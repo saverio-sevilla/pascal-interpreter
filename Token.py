@@ -51,7 +51,7 @@ class TokenType(Enum):
     BOOL = 'BOOL'
     TRUE = 'TRUE'
     FALSE = 'FALSE'
-    INTEGER_DIV = 'DIV' #Fix this in the code
+    INTEGER_DIV = 'DIV'
     NOT = 'NOT'
     AND = 'AND'
     OR = 'OR'
@@ -62,6 +62,7 @@ class TokenType(Enum):
     VAR = 'VAR'
     PROCEDURE = 'PROCEDURE'
     WRITELN = 'WRITELN'
+    READLN = 'READLN'
     WHILE = 'WHILE'
     DO = 'DO'
     END = 'END'
