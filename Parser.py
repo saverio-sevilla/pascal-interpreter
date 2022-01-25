@@ -2,6 +2,7 @@ from Token import *
 from Lexer import Lexer
 from Nodes import *
 from Errors import Error, ErrorCode, LexerError, SemanticError, ParserError
+from Stack import *
 
 #Modify first_priority, assignment, variable, type_spec
 
@@ -25,7 +26,6 @@ class Parser(object):
 
     def eat(self, token_type):
         # Compare the token_type with the token found, if matched "eat" the token, else raise error
-        print(self.current_token)
         if self.current_token.type == token_type:
             self.current_token = self.lexer.get_next_token()
         else:
@@ -60,7 +60,7 @@ class Parser(object):
         return node
 
 
-    def declarations(self):
+    def declarations(self) -> list:
         """
         declarations : (VAR (variable_declaration SEMI)+)? procedure_declaration*
         """
@@ -76,7 +76,6 @@ class Parser(object):
         while self.current_token.type == TokenType.PROCEDURE:
             proc_decl = self.procedure_declaration()
             declarations.append(proc_decl)
-
         return declarations
 
     def procedure_declaration(self):
@@ -151,31 +150,35 @@ class Parser(object):
 
         self.eat(TokenType.COLON)
 
-        type_node = self.type_spec()
+        type_node = self.type_spec() #Type node or Arraytype node
         # This calls the type_spec method to assign the parameter to the right type
         var_declarations = [
-            VarDecl(var_node, type_node)
+            VarDecl(var_node, type_node) #Types: Var, Type or Arraytype
             for var_node in var_nodes
         ]
         return var_declarations
 
-    def type_spec(self): ########## CHECK!
-        """type_spec : INTEGER
-                     | REAL
-                     | BOOLEAN
-                     | STRING
-                     | ARRAY
+    def type_spec(self):
+        """type_spec : INTEGER | -> Type
+                     | REAL    |
+                     | BOOLEAN |
+                     | STRING  |
+
+                     | ARRAY     -> ArrayType
         """
         token = self.current_token
         if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
             self.eat(self.current_token.type)
-        elif self.current_token.type == TokenType.ARRAY:  ##Modification for array
+        elif self.current_token.type == TokenType.ARRAY:  # Modified for arrays
             self.eat(self.current_token.type)
-            if self.current_token.type in (TokenType.RANGE, TokenType.INDEX):
+            if self.current_token.type == TokenType.RANGE:
+                range = self.current_token
                 self.eat(self.current_token.type)
-            self.eat(TokenType.OF)
-            if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
-                self.eat(self.current_token.type)
+                self.eat(TokenType.OF)
+                if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
+                    token = self.current_token
+                    self.eat(self.current_token.type)
+                return ArrayType(token, range)
         return Type(token)
 
 
@@ -213,6 +216,8 @@ class Parser(object):
         statement : compound_statement
                   | assignment_statement
                   | conditional_statement
+                  | write_statement
+                  | read_statement
                   | empty
 
         print statements would be added here
@@ -316,15 +321,21 @@ class Parser(object):
         return Else(token=token, child=child)
 
 
-    def writeln_statement(self): #To finish
+    def writeln_statement(self):
+
+        #Modify to support arrays
+        #Modify to save variables and array variables instead of saving tokens
+
         token = self.current_token
         token_list = []
         self.eat(TokenType.WRITELN)
         self.eat(TokenType.LPAREN)
+
         if self.current_token.type == TokenType.STRING:
             token_list.append(self.current_token)
             self.eat(TokenType.STRING)
         else:
+            print_token = self.current_token
             token_list.append(self.current_token)
             self.eat(TokenType.ID)
 
@@ -375,15 +386,19 @@ class Parser(object):
         """
         variable : ID
         """
-        node = Var(self.current_token)
+
+        token = self.current_token
+        node = Var(token)
+
         if self.current_token.type == TokenType.STRING:
             self.eat(TokenType.STRING)
-
-        if self.current_token.type == TokenType.ARRAY: #####Array method
-            self.eat(TokenType.ARRAY)
         else:
             self.eat(TokenType.ID)
-        return node
+            if self.current_token.type == TokenType.INDEX:  #We found an index
+                index = self.current_token
+                self.eat(TokenType.INDEX)
+                return ArrayVar(token, index)
+        return node #Type Var
 
 
     def empty(self):

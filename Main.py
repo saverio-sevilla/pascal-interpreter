@@ -3,7 +3,7 @@ from Parser import *
 from Interpreter import Interpreter
 from Token import _build_reserved_keywords
 
-#Add arrays
+
 
 def main():
 
@@ -11,13 +11,15 @@ def main():
     program Main;
     var x, y : integer;
     a : integer;
-    arr : array[2..5] of integer;
-    idx : array[3] of integer;
+    arr : array[2..4] of integer;
     begin { Main }
         y := 7;
+        a := 12;
         x := (y + 3) * 3;
-        readln(y, x);
-        writeln("Hello \n");
+        arr[2] := 3;
+        arr[3] := 8;
+        a := a + arr[2];
+        writeln("Hello ", y, "\n");
         writeln(x);
     end.  { Main }
 

@@ -2,7 +2,9 @@ from SemanticAnalysis import NodeVisitor
 from Parser import *
 from Token import *
 from Stack import *
+from ConstraintDict import CDict
 
+#Try using var_decl to build array
 
 ###################
 #  INTERPRETER    #
@@ -52,12 +54,29 @@ class Interpreter(NodeVisitor):
         self.visit(node.compound_statement)
 
     def visit_VarDecl(self, node):
-        # Do nothing
-        pass
+        print("Visited VARDECL")
+        print("Name: ", node.var_node.token.value)
+
+        if hasattr(node.type_node, 'range'): #Modify for new dict
+            name = node.var_node.token.value
+            print("RANGE: ", node.type_node.range[0], node.type_node.range[1])
+            ar = self.call_stack.peek()
+
+            min_range = node.type_node.range[0]
+            max_range = node.type_node.range[1]
+            ar[name] = CDict(min_range, max_range)
+
+            #ar[name] = {}
+
+
 
     def visit_Type(self, node):
-        # Do nothing
         pass
+
+
+    def visit_ArrayType(self, node):
+        pass
+
 
     def visit_BinOp(self, node):
         if node.op.type == TokenType.PLUS:
@@ -86,7 +105,6 @@ class Interpreter(NodeVisitor):
             return self.visit(node.left) <= self.visit(node.right)
         elif node.op.type == TokenType.GREAT_EQ:
             return self.visit(node.left) >= self.visit(node.right)
-
 
     def visit_Num(self, node):
         return node.value
@@ -143,21 +161,6 @@ class Interpreter(NodeVisitor):
     def visit_Else(self, node: Else):
         self.visit(node.child)
 
-    def visit_Assign(self, node): #Modify for arrays
-        var_name = node.left.value
-        var_value = self.visit(node.right)
-
-        ar = self.call_stack.peek()
-        ar[var_name] = var_value
-
-    def visit_Var(self, node): #Add support for array
-        var_name = node.value
-
-        ar = self.call_stack.peek()
-        var_value = ar.get(var_name)
-
-        return var_value
-
     def visit_NoOp(self, node):
         pass
 
@@ -166,6 +169,43 @@ class Interpreter(NodeVisitor):
 
     def visit_ProcedureCall(self, node):
         pass
+
+    def visit_Assign(self, node):  #Modify for new dict
+        if hasattr(node.left, 'index'):
+            var_name = node.left.value
+            var_value = self.visit(node.right)
+            var_index = node.left.index
+            ar = self.call_stack.peek()
+
+            #ar[var_name][var_index] = var_value
+
+            ar[var_name].add(var_index, var_value)
+
+        else:
+            var_name = node.left.value
+            var_value = self.visit(node.right)
+
+            ar = self.call_stack.peek()
+            ar[var_name] = var_value
+
+    def visit_Var(self, node):
+        var_name = node.value
+
+        ar = self.call_stack.peek()
+        var_value = ar.get(var_name)
+
+        return var_value
+
+    def visit_ArrayVar(self, node):
+        var_name = node.value
+        index = node.index
+        ar = self.call_stack.peek()
+
+        #var_value = ar.get(var_name)[index] #Modify
+
+        var_value = ar.get(var_name).get(index)
+
+        return var_value
 
 
     def interpret(self):

@@ -203,13 +203,21 @@ class SemanticAnalyzer(NodeVisitor):
         print('LEAVE scope: %s' %  proc_name)
 
     def visit_VarDecl(self, node):
-        type_name = node.type_node.value
+
+        if hasattr(node.type_node, 'range'):
+            type_name = 'ARRAY'
+        else:
+            type_name = node.type_node.value
+
         type_symbol = self.current_scope.lookup(type_name)
+        print("SYMBOL: ", type_symbol)
 
         # We have all the information we need to create a variable symbol.
         # Create the symbol and insert it into the symbol table.
         var_name = node.var_node.value
         var_symbol = VarSymbol(var_name, type_symbol)
+
+        print(node.type_node.token)
 
         # Signal an error if the table already has a symbol
         # with the same name

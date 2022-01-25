@@ -25,6 +25,9 @@ class Num(AST):
         self.value = token.value
 
 
+#Add class for arrays?
+
+
 class Boolean(AST):
     def __init__(self, token: Token):
         self.token = token
@@ -60,6 +63,26 @@ class Var(AST):
         self.value = token.value
 
 
+class ArrayVar(AST):
+    def __init__(self, token: Token, index: Token):
+        self.token = token
+        self.value = token.value #name of array
+        self.index = index.value #index
+
+
+class Type(AST):
+    def __init__(self, token: Token):
+        self.token = token
+        self.value = token.value
+
+
+class ArrayType(AST):
+    def __init__(self, token: Token, range: Token):
+        self.token = token
+        self.value = token.value
+        self.range = range.value #Tuple
+
+
 class Program(AST):
     def __init__(self, name: str, block: AST):
         self.name = name
@@ -76,12 +99,6 @@ class VarDecl(AST):
     def __init__(self, var_node: AST, type_node: AST):
         self.var_node = var_node
         self.type_node = type_node
-
-
-class Type(AST):
-    def __init__(self, token: Token):
-        self.token = token
-        self.value = token.value
 
 
 class Param(AST):
