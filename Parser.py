@@ -336,8 +336,14 @@ class Parser(object):
             self.eat(TokenType.STRING)
         else:
             print_token = self.current_token
-            token_list.append(self.current_token)
             self.eat(TokenType.ID)
+            if self.current_token.type == TokenType.INDEX:
+                index = self.current_token
+                self.eat(TokenType.INDEX)
+                token_list.append((print_token, index)) #Format (Token, Token)
+            else:
+                token_list.append(print_token)
+
 
         while self.current_token.type == TokenType.COMMA:
             self.eat(TokenType.COMMA)
@@ -346,8 +352,14 @@ class Parser(object):
                 token_list.append(self.current_token)
                 self.eat(TokenType.STRING)
             else:
-                token_list.append(self.current_token)
+                print_token = self.current_token
                 self.eat(TokenType.ID)
+                if self.current_token.type == TokenType.INDEX:
+                    index = self.current_token
+                    self.eat(TokenType.INDEX)
+                    token_list.append((print_token, index))  # Format (Token, Token)
+                else:
+                    token_list.append(print_token)
         self.eat(TokenType.RPAREN)
 
         return Writeln(token=token, token_list=token_list)

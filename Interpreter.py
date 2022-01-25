@@ -130,7 +130,11 @@ class Interpreter(NodeVisitor):
 
     def visit_Writeln(self, node: Writeln):
         for token in node.token_list:
-            if token.type is TokenType.STRING:
+            if type(token) is tuple:
+                ar = self.call_stack.peek()
+                var_value = ar.get(token[0].value).get(token[1].value)
+                print(var_value, end = "")
+            elif token.type is TokenType.STRING:
                 print(token.value, end = "")
             elif token.type is TokenType.ID:
                 ar = self.call_stack.peek()
