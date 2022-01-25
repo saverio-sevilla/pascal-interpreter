@@ -31,6 +31,8 @@ class TokenType(Enum):
     FLOAT_DIV = '/'
     LPAREN = '('
     RPAREN = ')'
+    L_SQ_PAREN = '['
+    R_SQ_PAREN = ']'
     EQUAL = '='
     GREATER = '>'
     LESSER = '<'
@@ -45,6 +47,10 @@ class TokenType(Enum):
     COMMA = ','
     #Reserved keywords
     PROGRAM = 'PROGRAM'
+    ARRAY = 'ARRAY'
+    OF = 'OF'
+    RANGE = 'RANGE'
+    INDEX = 'INDEX'
     INTEGER = 'INTEGER'  # Used for the types INT and REAL
     REAL = 'REAL'
     STRING = 'STRING'

@@ -143,14 +143,14 @@ class Interpreter(NodeVisitor):
     def visit_Else(self, node: Else):
         self.visit(node.child)
 
-    def visit_Assign(self, node):
+    def visit_Assign(self, node): #Modify for arrays
         var_name = node.left.value
         var_value = self.visit(node.right)
 
         ar = self.call_stack.peek()
         ar[var_name] = var_value
 
-    def visit_Var(self, node):
+    def visit_Var(self, node): #Add support for array
         var_name = node.value
 
         ar = self.call_stack.peek()

@@ -1,6 +1,7 @@
 from Token import *
 from Errors import Error, ErrorCode, LexerError, SemanticError, ParserError
 
+#Added array function
 
 class Lexer(object):
     def __init__(self, text):
@@ -43,6 +44,8 @@ class Lexer(object):
         else:
             return self.text[peek_pos]
 
+    #Use modified peek? 
+
 
     def skip_whitespace(self):
         while self.current_char is not None and self.current_char.isspace():
@@ -58,6 +61,9 @@ class Lexer(object):
             self.advance()
         self.advance()  # the closing curly brace
 
+
+    def array(self): #Maybe requires modified peek function to find the [ ?
+        pass
 
     def string(self) -> Token:
 
@@ -121,11 +127,59 @@ class Lexer(object):
             token.type = TokenType.ID
             token.value = result
 
+        elif token_type == TokenType.ARRAY:
+            print("Found array")    #Returns token with type ARRAY and value [range min, range max]
+            token.type = token_type
+            token.value = result.upper()
+
         else:   # Found a reserved keyword
             token.type = token_type
             token.value = result.upper()
 
         return token
+
+
+    def get_index(self):
+        index = self.number_int()
+        if self.current_char is "]":
+            self.advance()
+        else:
+            print("Did not find ] at end of range")
+            self.error()
+        return index
+
+
+    def check_if_index(self):
+        peek_pos = self.pos
+        while peek_pos < len(self.text) + 1 and self.text[peek_pos] != ']':
+            peek_pos += 1
+            if self.text[peek_pos] == '.':
+                return False
+        return True
+
+
+    def get_range(self):
+        lower_range = self.number_int()
+        while self.current_char is ".":
+            self.advance()
+        upper_range = self.number_int()
+        if self.current_char is "]":
+            self.advance()
+        else:
+            print("Did not find ] at end of range")
+            self.error()
+
+        return (lower_range, upper_range)
+
+
+    def number_int(self):
+        result = ''
+        while self.current_char is not None and self.current_char.isdigit():
+            result += self.current_char
+            self.advance()
+        result = int(result)
+        return result
+
 
     def get_next_token(self):
 
@@ -141,6 +195,28 @@ class Lexer(object):
                 self.advance()
                 self.skip_comment()
                 continue
+
+
+            if self.current_char == '[':
+                self.advance()
+                if self.check_if_index():
+                    index = self.get_index()
+                    token = Token(
+                        type=TokenType.INDEX,
+                        value=index,  # Value is an int
+                        lineno=self.lineno,
+                        column=self.column,
+                    )
+                    return token
+                else:
+                    range = self.get_range()
+                    token = Token(
+                        type=TokenType.RANGE,
+                        value=range,  # The value is a tuple (low_range, high_index)
+                        lineno=self.lineno,
+                        column=self.column,
+                    )
+                    return token
 
             if self.current_char == '"' or self.current_char == '\'': #For the print function
                 self.advance()

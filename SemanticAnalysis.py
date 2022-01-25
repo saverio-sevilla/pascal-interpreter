@@ -80,6 +80,7 @@ class ScopedSymbolTable(object):
         self.insert(BuiltinTypeSymbol('REAL'))
         self.insert(BuiltinTypeSymbol('BOOL'))
         self.insert(BuiltinTypeSymbol('STRING'))
+        self.insert(BuiltinTypeSymbol('ARRAY'))
 
     def __str__(self): #Print function for scope tables
         h1 = 'SCOPE (SCOPED SYMBOL TABLE)'
@@ -253,4 +254,10 @@ class SemanticAnalyzer(NodeVisitor):
         pass
 
     def visit_UnaryOp(self, node):
+        pass
+
+    def visit_Writeln(self, node):
+        pass
+
+    def visit_Readln(self, node):
         pass

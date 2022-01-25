@@ -3,6 +3,8 @@ from Lexer import Lexer
 from Nodes import *
 from Errors import Error, ErrorCode, LexerError, SemanticError, ParserError
 
+#Modify first_priority, assignment, variable, type_spec
+
 
 ###############
 #   PARSER    #
@@ -23,6 +25,7 @@ class Parser(object):
 
     def eat(self, token_type):
         # Compare the token_type with the token found, if matched "eat" the token, else raise error
+        print(self.current_token)
         if self.current_token.type == token_type:
             self.current_token = self.lexer.get_next_token()
         else:
@@ -161,10 +164,18 @@ class Parser(object):
                      | REAL
                      | BOOLEAN
                      | STRING
+                     | ARRAY
         """
         token = self.current_token
         if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
             self.eat(self.current_token.type)
+        elif self.current_token.type == TokenType.ARRAY:  ##Modification for array
+            self.eat(self.current_token.type)
+            if self.current_token.type in (TokenType.RANGE, TokenType.INDEX):
+                self.eat(self.current_token.type)
+            self.eat(TokenType.OF)
+            if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
+                self.eat(self.current_token.type)
         return Type(token)
 
 
@@ -349,7 +360,7 @@ class Parser(object):
         return Readln(token=token, token_list=token_list)
 
 
-    def assignment_statement(self):
+    def assignment_statement(self):     #Modify for arrays
         """
         assignment_statement : variable ASSIGN expr
         """
@@ -360,13 +371,16 @@ class Parser(object):
         node = Assign(left, token, right)
         return node
 
-    def variable(self):
+    def variable(self):     #Modify for arrays
         """
         variable : ID
         """
         node = Var(self.current_token)
         if self.current_token.type == TokenType.STRING:
             self.eat(TokenType.STRING)
+
+        if self.current_token.type == TokenType.ARRAY: #####Array method
+            self.eat(TokenType.ARRAY)
         else:
             self.eat(TokenType.ID)
         return node
@@ -510,7 +524,7 @@ class Parser(object):
             self.eat(TokenType.RPAREN)
             return node
         else:
-            node = self.variable()
+            node = self.variable()  #Modify for arrays
             return node
 
     def parse(self):

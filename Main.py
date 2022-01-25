@@ -3,12 +3,16 @@ from Parser import *
 from Interpreter import Interpreter
 from Token import _build_reserved_keywords
 
+#Add arrays
 
 def main():
 
     text = """
     program Main;
     var x, y : integer;
+    a : integer;
+    arr : array[2..5] of integer;
+    idx : array[3] of integer;
     begin { Main }
         y := 7;
         x := (y + 3) * 3;
