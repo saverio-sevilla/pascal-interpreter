@@ -1,11 +1,10 @@
 from Errors import *
-from Token import *
+
 
 #####################################
 #  SYMBOL TABLE, SEMANTIC ANALYSIS  #
 #          NODE VISITOR             #
 #####################################
-
 
 
 class NodeVisitor(object):
@@ -187,7 +186,7 @@ class SemanticAnalyzer(NodeVisitor):
         )
         self.current_scope = procedure_scope
 
-        # Insert parameters into the procedure scope
+        # Enter the parameters into the procedure scope (level = current + 1)
         for param in node.params:
             param_type = self.current_scope.lookup(param.type_node.value)
             param_name = param.var_node.value
@@ -205,6 +204,8 @@ class SemanticAnalyzer(NodeVisitor):
     def visit_VarDecl(self, node):
 
         if hasattr(node.type_node, 'range'):
+            # Array variables will be stored under the type ARRAY
+            # Should be modified to have a reference to the type of the array elements
             type_name = 'ARRAY'
         else:
             type_name = node.type_node.value
@@ -219,8 +220,7 @@ class SemanticAnalyzer(NodeVisitor):
 
         print(node.type_node.token)
 
-        # Signal an error if the table already has a symbol
-        # with the same name
+        # Signal error if the table has a symbol  with the same name
 
         if self.current_scope.lookup(var_name, current_scope_only=True):
             self.error(
@@ -231,9 +231,7 @@ class SemanticAnalyzer(NodeVisitor):
         self.current_scope.insert(var_symbol)
 
     def visit_Assign(self, node):
-        # right-hand side
         self.visit(node.right)
-        # left-hand side
         self.visit(node.left)
 
     def visit_Var(self, node):

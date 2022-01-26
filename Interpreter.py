@@ -4,7 +4,6 @@ from Token import *
 from Stack import *
 from ConstraintDict import CDict
 
-#Try using var_decl to build array
 
 ###################
 #  INTERPRETER    #
@@ -54,19 +53,15 @@ class Interpreter(NodeVisitor):
         self.visit(node.compound_statement)
 
     def visit_VarDecl(self, node):
-        print("Visited VARDECL")
-        print("Name: ", node.var_node.token.value)
 
-        if hasattr(node.type_node, 'range'): #Modify for new dict
+        if hasattr(node.type_node, 'range'):
             name = node.var_node.token.value
-            print("RANGE: ", node.type_node.range[0], node.type_node.range[1])
             ar = self.call_stack.peek()
 
             min_range = node.type_node.range[0]
             max_range = node.type_node.range[1]
             ar[name] = CDict(min_range, max_range)
 
-            #ar[name] = {}
 
 
 

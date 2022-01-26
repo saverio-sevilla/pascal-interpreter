@@ -25,9 +25,6 @@ class Num(AST):
         self.value = token.value
 
 
-#Add class for arrays?
-
-
 class Boolean(AST):
     def __init__(self, token: Token):
         self.token = token
@@ -64,10 +61,11 @@ class Var(AST):
 
 
 class ArrayVar(AST):
+    # Built using an ARRAY token and an INDEX token
     def __init__(self, token: Token, index: Token):
         self.token = token
-        self.value = token.value #name of array
-        self.index = index.value #index
+        self.value = token.value  # name of array
+        self.index = index.value  # index
 
 
 class Type(AST):
@@ -78,9 +76,10 @@ class Type(AST):
 
 class ArrayType(AST):
     def __init__(self, token: Token, range: Token):
+        # Built using a TYPE token (INTEGER, BOOL, etc) and a RANGE token
         self.token = token
         self.value = token.value
-        self.range = range.value #Tuple
+        self.range = range.value  # Tuple (min_range, max_range)
 
 
 class Program(AST):
@@ -126,10 +125,12 @@ class Then(AST):
         self.token = token
         self.child = child
 
+
 class Else(AST):
     def __init__(self, token: Token, child: AST):
         self.token = token
         self.child = child
+
 
 class Condition(AST):
     def __init__(self, token: Token, condition_node: AST, then_node: AST, else_node: AST):
@@ -138,10 +139,12 @@ class Condition(AST):
         self.then_node = then_node
         self.else_node = else_node
 
+
 class Do(AST):
     def __init__(self, token: Token, child: AST):
         self.token = token
         self.child = child
+
 
 class While(AST):
     def __init__(self, token: Token, condition_node: AST, do_node: AST):
@@ -149,10 +152,12 @@ class While(AST):
         self.condition_node = condition_node
         self.do_node = do_node
 
+
 class Writeln(AST):
     def __init__(self, token: Token, token_list):
         self.token = token
         self.token_list = token_list
+
 
 class Readln(AST):
     def __init__(self, token: Token, token_list):

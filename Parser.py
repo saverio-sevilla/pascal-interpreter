@@ -1,8 +1,6 @@
-from Token import *
-from Lexer import Lexer
 from Nodes import *
-from Errors import Error, ErrorCode, LexerError, SemanticError, ParserError
-from Stack import *
+from Errors import ErrorCode, ParserError
+
 
 #Modify first_priority, assignment, variable, type_spec
 
@@ -364,7 +362,7 @@ class Parser(object):
 
         return Writeln(token=token, token_list=token_list)
 
-    def readln_statement(self):
+    def readln_statement(self): #Update to work with array elements and to print strings (optional)
         token = self.current_token
         token_list = []
         self.eat(TokenType.READLN)
@@ -383,7 +381,7 @@ class Parser(object):
         return Readln(token=token, token_list=token_list)
 
 
-    def assignment_statement(self):     #Modify for arrays
+    def assignment_statement(self):
         """
         assignment_statement : variable ASSIGN expr
         """
@@ -394,7 +392,7 @@ class Parser(object):
         node = Assign(left, token, right)
         return node
 
-    def variable(self):     #Modify for arrays
+    def variable(self):
         """
         variable : ID
         """
@@ -406,7 +404,7 @@ class Parser(object):
             self.eat(TokenType.STRING)
         else:
             self.eat(TokenType.ID)
-            if self.current_token.type == TokenType.INDEX:  #We found an index
+            if self.current_token.type == TokenType.INDEX:
                 index = self.current_token
                 self.eat(TokenType.INDEX)
                 return ArrayVar(token, index)

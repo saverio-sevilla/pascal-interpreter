@@ -1,5 +1,5 @@
 from Token import *
-from Errors import Error, ErrorCode, LexerError, SemanticError, ParserError
+from Errors import LexerError
 
 #Added array function
 
@@ -111,9 +111,10 @@ class Lexer(object):
         return token
 
 
-    def _id(self) -> Token: #Finds reserved keywords and identifiers
+    def _id(self) -> Token:
 
-        # Create a new token
+        #Finds reserved keywords and identifiers
+
         token = Token(type=None, value=None, lineno=self.lineno, column=self.column)
 
         result = ''

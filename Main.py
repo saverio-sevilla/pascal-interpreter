@@ -1,5 +1,6 @@
 from SemanticAnalysis import *
-from Parser import *
+from Parser import Parser
+from Lexer import Lexer
 from Interpreter import Interpreter
 from Token import _build_reserved_keywords
 
@@ -19,7 +20,7 @@ def main():
         arr[2] := 3;
         arr[3] := 8;
         a := a + arr[2];
-        writeln(arr[2], "\n");
+        writeln(arr[2], "\n" , arr[3], "\n");
         writeln("Hello ", y, "\n");
         writeln(x);
     end.  { Main }

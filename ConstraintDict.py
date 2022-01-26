@@ -1,3 +1,5 @@
+# Represents arrays in the stack
+
 
 class CDict:
 
@@ -8,6 +10,11 @@ class CDict:
 
     def error(self):
         print("Error, array index out of bounds")
+
+    def reshape(self, min_range, max_range):
+        self.min_range = min_range
+        self.max_range = max_range
+        print("Array reshaped to", min_range, max_range)
 
     def add(self, key, value):
         if key <= self.max_range and key >= self.min_range and isinstance(key, int):

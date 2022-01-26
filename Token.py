@@ -23,6 +23,7 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
+
 class TokenType(Enum):
     # single-character token types
     PLUS = '+'
@@ -42,7 +43,7 @@ class TokenType(Enum):
     SEMI = ';'
     DOT = '.'
     COLON = ':'
-    QUOTE = '"' #Fix in code
+    QUOTE = '"'
     S_QUOTE ='\''
     COMMA = ','
     #Reserved keywords
@@ -75,13 +76,9 @@ class TokenType(Enum):
     EOF = 'EOF'
     # Other keywords
     ASSIGN = ':='
-    INTEGER_CONST = 'INTEGER_CONST'  # Used for the value of types INT and REAL
+    INTEGER_CONST = 'INTEGER_CONST'  # Values of types INT and REAL
     REAL_CONST = 'REAL_CONST'
     ID = 'ID'
-
-
-
-
 
 
 """
@@ -93,6 +90,7 @@ Lista di parole chiave per la funzione ID
 (quelli identificati direttamente dalla funzione get_new_token
  non devono essere inclusi)
 """
+
 
 def _build_reserved_keywords():
 
