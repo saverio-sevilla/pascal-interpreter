@@ -213,13 +213,11 @@ class Parser(object):
         """
         statement : compound_statement
                   | assignment_statement
-                  | conditional_statement
+                  | while_statement
+                  | if_statement
                   | write_statement
                   | read_statement
                   | empty
-
-        print statements would be added here
-
         """
 
         if (self.current_token.type == TokenType.ID and
@@ -269,6 +267,7 @@ class Parser(object):
         )
         return node
 
+
     def while_statement(self):
         token = self.current_token
         self.eat(TokenType.WHILE)
@@ -286,9 +285,11 @@ class Parser(object):
 
 
     def conditional_statement(self):
+
         """
-        if-then-else type statement
+        if_statement : IF condition THEN statement (ELSE statement)?
         """
+
         token = self.current_token
         self.eat(TokenType.IF)
         condition_node = self.expr()
@@ -301,18 +302,14 @@ class Parser(object):
         return Condition(token=token, condition_node = condition_node, then_node= then_node, else_node=else_node)
 
     def then_statement(self):
-        """
-        then_statement: statement that follows an IF statement
-        """
+
         token = self.current_token
         self.eat(TokenType.THEN)
         child = self.statement()
         return Then(token=token, child=child)
 
     def else_statement(self):
-        """
-        else_statement: optionally follows an IF statement
-        """
+
         token = self.current_token
         self.eat(TokenType.ELSE)
         child = self.statement()
@@ -320,8 +317,12 @@ class Parser(object):
 
 
     def writeln_statement(self):
+        '''
 
-        #Modify to support arrays
+        write_statement : WRITELN LPAREN string* var* arrayvar* RPAREN
+
+        '''
+
         #Modify to save variables and array variables instead of saving tokens
 
         token = self.current_token
@@ -362,7 +363,15 @@ class Parser(object):
 
         return Writeln(token=token, token_list=token_list)
 
+
     def readln_statement(self): #Update to work with array elements and to print strings (optional)
+        '''
+
+        read_statement : READLN LPAREN var* RPAREN
+
+        '''
+
+
         token = self.current_token
         token_list = []
         self.eat(TokenType.READLN)
@@ -449,7 +458,7 @@ class Parser(object):
 
     def fifth_priority(self) -> AST:
         """
-        Equal operators (=, !=)
+        Equality operators =, !=
         """
         node = self.fourth_priority()
 
@@ -462,7 +471,7 @@ class Parser(object):
 
     def fourth_priority(self) -> AST:
         """
-        Comparison operators (>, <, >=, <=)
+        Comparison operators >, <, >=, <=
         """
         node = self.third_priority()
 
@@ -537,19 +546,16 @@ class Parser(object):
         elif token.type == TokenType.FALSE:
             self.eat(TokenType.FALSE)
             return Boolean(token)
-
-        ##########################
         elif token.type == TokenType.STRING:
             self.eat(TokenType.STRING)
             return String(token)
-
         elif token.type == TokenType.LPAREN:
             self.eat(TokenType.LPAREN)
             node = self.expr()
             self.eat(TokenType.RPAREN)
             return node
         else:
-            node = self.variable()  #Modify for arrays
+            node = self.variable()  #Handles array variables (Ex. arr[5])
             return node
 
     def parse(self):
@@ -557,6 +563,8 @@ class Parser(object):
 
         '|': OR
         '?': optional
+
+
         program : PROGRAM variable SEMI block DOT
         block : declarations compound_statement
         declarations : (VAR (variable_declaration SEMI)+)*
@@ -566,25 +574,39 @@ class Parser(object):
         formal_params_list : formal_parameters
                            | formal_parameters SEMI formal_parameter_list
         formal_parameters : ID (COMMA ID)* COLON type_spec
-        type_spec : INTEGER
+        type_spec : INTEGER, BOOL, STRING, ARRAY
         compound_statement : BEGIN statement_list END
         statement_list : statement
                        | statement SEMI statement_list
         statement : compound_statement
                   | assignment_statement
+                  | if_statement
+                  | while_statement
+                  | write_statement
+                  | read_statement
                   | empty
         assignment_statement : variable ASSIGN expr
         empty :
-        expr : term ((PLUS | MINUS) term)*
-        term : factor ((MUL | INTEGER_DIV | FLOAT_DIV) factor)*
-        factor : PLUS factor
-               | MINUS factor
+
+        seventh_priority : sixth_priority OR sixth_priority
+        sixth_priority : fifth_priority  AND fifth_priority
+        fifth_priority : fourth_priority (( = | != )  fourth_priority )
+        fourth_priority : third_priority (( < | > | <= | >= ) third_priority)
+        third_priority : second_priority ((PLUS | MINUS) second_priority)*
+        second_priority : first_priority ((MUL | INTEGER_DIV | FLOAT_DIV) first_priority)*
+        first_priority :
+               | unary PLUS factor
+               | unary MINUS factor
+               | TRUE
+               | FALSE
+               | STRING
                | INTEGER_CONST
                | REAL_CONST
                | LPAREN expr RPAREN
                | variable
         variable: ID
         """
+
         node = self.program()
         if self.current_token.type != TokenType.EOF:
             self.error(

@@ -1,4 +1,4 @@
-from Errors import *
+from Errors import SemanticError, ErrorCode
 
 
 #####################################

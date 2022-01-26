@@ -1,4 +1,4 @@
-from Token import *
+from Token import TokenType, Token, RESERVED_KEYWORDS
 from Lexer import Lexer
 
 class AST(object):

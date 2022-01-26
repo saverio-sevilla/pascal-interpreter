@@ -12,7 +12,7 @@ class Token(object):
     def __str__(self):
 
         # Printing function for objects of Token type
-        # Funzione per stampare oggetti di tipo Token
+        # Funzione per stampare Token
 
         return 'Token({type}, {value}), line number: {lineno}'.format(
             type=self.type,
