@@ -63,8 +63,6 @@ class Interpreter(NodeVisitor):
             ar[name] = CDict(min_range, max_range)
 
 
-
-
     def visit_Type(self, node):
         pass
 
@@ -167,7 +165,34 @@ class Interpreter(NodeVisitor):
         pass
 
     def visit_ProcedureCall(self, node):
-        pass
+        proc_name = node.proc_name
+        proc_symbol = node.proc_symbol
+
+        ar = ActivationRecord(
+            name=proc_name,
+            type=ARType.PROCEDURE,
+            nesting_level=proc_symbol.scope_level + 1,
+        )
+
+        formal_params = proc_symbol.formal_params
+        actual_params = node.actual_params
+
+        for param_symbol, argument_node in zip(formal_params, actual_params):
+            ar[param_symbol.name] = self.visit(argument_node)
+
+        self.call_stack.push(ar)
+
+        self.log(f'ENTER: PROCEDURE {proc_name}')
+        self.log(str(self.call_stack))
+
+        # evaluate procedure body
+        self.visit(proc_symbol.block_ast)
+
+        self.log(f'LEAVE: PROCEDURE {proc_name}')
+        self.log(str(self.call_stack))
+
+        self.call_stack.pop()
+
 
     def visit_Assign(self, node):  #Modify for new dict
         if hasattr(node.left, 'index'):

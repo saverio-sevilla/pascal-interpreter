@@ -9,22 +9,29 @@ from Token import _build_reserved_keywords
 def main():
 
     text = """
-    program Main;
-    var x, y : integer;
-    a : integer;
-    arr : array[2..4] of integer;
-    begin { Main }
-        y := 7;
-        a := 12;
-        x := (y + 3) * 3;
-        arr[2] := 3;
-        arr[3] := 8;
-        a := a + arr[2];
-        writeln(arr[2], "\n" , arr[3], "\n");
-        writeln("Hello ", y, "\n");
-        writeln(x);
-    end.  { Main }
 
+    program Main;
+
+    procedure Alpha(a : integer; b : integer);
+    var x : integer;
+
+        procedure Beta(a : integer; b : integer);
+        var x : integer;
+        begin
+            x := a * 10 + b * 2;
+        end;
+
+    begin
+        x := (a + b ) * 2;
+
+        Beta(5, 10);      { procedure call }
+    end;
+
+    begin { Main }
+
+        Alpha(3 + 5, 7);  { procedure call }
+
+    end.  { Main }
 
     """
     RESERVED_KEYWORDS = _build_reserved_keywords()

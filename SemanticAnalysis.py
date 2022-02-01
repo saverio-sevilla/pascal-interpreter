@@ -21,6 +21,7 @@ class Symbol(object):
     def __init__(self, name, type=None):
         self.name = name
         self.type = type
+        self.scope_level = 0
 
 
 class VarSymbol(Symbol):
@@ -52,16 +53,18 @@ class BuiltinTypeSymbol(Symbol):
 
 
 class ProcedureSymbol(Symbol):
-    def __init__(self, name, params=None):
+    def __init__(self, name, formal_params=None):
         super().__init__(name)
-        # a list of formal parameters
-        self.params = params if params is not None else []
+        # a list of VarSymbol objects
+        self.formal_params = [] if formal_params is None else formal_params
+        # a reference to procedure's body (AST sub-tree)
+        self.block_ast = None
 
     def __str__(self):
         return '<{class_name}(name={name}, parameters={params})>'.format(
             class_name=self.__class__.__name__,
             name=self.name,
-            params=self.params,
+            params=self.formal_params,
         )
 
     __repr__ = __str__
@@ -106,6 +109,7 @@ class ScopedSymbolTable(object):
 
     def insert(self, symbol):
         print('Insert: %s' % symbol.name)
+        symbol.scope_level = self.scope_level
         self._symbols[symbol.name] = symbol
 
     def lookup(self, name, current_scope_only=False):
@@ -177,7 +181,7 @@ class SemanticAnalyzer(NodeVisitor):
         proc_symbol = ProcedureSymbol(proc_name)
         self.current_scope.insert(proc_symbol)
 
-        print('ENTER scope: %s' %  proc_name)
+        # self.log(f'ENTER scope: {proc_name}')
         # Scope for parameters and local variables
         procedure_scope = ScopedSymbolTable(
             scope_name=proc_name,
@@ -186,20 +190,23 @@ class SemanticAnalyzer(NodeVisitor):
         )
         self.current_scope = procedure_scope
 
-        # Enter the parameters into the procedure scope (level = current + 1)
-        for param in node.params:
+        # Insert parameters into the procedure scope
+        for param in node.formal_params:
             param_type = self.current_scope.lookup(param.type_node.value)
             param_name = param.var_node.value
             var_symbol = VarSymbol(param_name, param_type)
             self.current_scope.insert(var_symbol)
-            proc_symbol.params.append(var_symbol)
+            proc_symbol.formal_params.append(var_symbol)
 
         self.visit(node.block_node)
 
-        print(procedure_scope)
+        #self.log(procedure_scope)
 
         self.current_scope = self.current_scope.enclosing_scope
-        print('LEAVE scope: %s' %  proc_name)
+        #self.log(f'LEAVE scope: {proc_name}')
+
+        # accessed by the interpreter when executing procedure call
+        proc_symbol.block_ast = node.block_node
 
     def visit_VarDecl(self, node):
 
@@ -240,11 +247,15 @@ class SemanticAnalyzer(NodeVisitor):
         if var_symbol is None:
             self.error(error_code=ErrorCode.ID_NOT_FOUND, token=node.token)
 
+    '''
+
     def visit_ProcedureCall(self, node):
         print("Visited procedure call")
         proc_symbol = self.current_scope.lookup(node.proc_name)
+        node.proc_symbol = proc_symbol
         formal_params = proc_symbol.params
         actual_params = node.actual_params
+
         print("Params: ", formal_params, len(formal_params), actual_params, len(actual_params))
         if len(actual_params) != len(formal_params):
             print("Error")
@@ -255,6 +266,20 @@ class SemanticAnalyzer(NodeVisitor):
 
         for param_node in node.actual_params:
             self.visit(param_node)
+            
+    '''
+
+    def visit_ProcedureCall(self, node):
+
+        proc_symbol = self.current_scope.lookup(node.proc_name)
+
+        print("Proc_symbol: " ,proc_symbol)
+        # accessed by the interpreter when executing procedure call
+        node.proc_symbol = proc_symbol
+
+        for param_node in node.actual_params:
+            self.visit(param_node)
+
 
     def visit_Num(self, node):
         pass

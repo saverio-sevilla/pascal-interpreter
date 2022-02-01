@@ -107,9 +107,9 @@ class Param(AST):
 
 
 class ProcedureDecl(AST):
-    def __init__(self, proc_name, params, block_node: Block):
+    def __init__(self, proc_name, formal_params, block_node: Block):
         self.proc_name = proc_name
-        self.params = params  # a list of Param nodes
+        self.formal_params = formal_params  # a list of Param nodes
         self.block_node = block_node
 
 
@@ -118,6 +118,26 @@ class ProcedureCall(AST):
         self.proc_name = proc_name
         self.actual_params = actual_params  # a list of AST nodes
         self.token = token
+        # a reference to procedure declaration symbol
+        self.proc_symbol = None
+
+
+class FunctionDecl(AST):
+    def __init__(self, proc_name, formal_params, block_node, return_type):
+        self.proc_name = proc_name
+        self.formal_params = formal_params
+        self.block_node = block_node
+        self.return_type = return_type
+
+
+
+class FunctionCall(AST): #Check for reference to symbol
+    def __init__(self, func_name: str, actual_params, token):
+        self.func_name = func_name
+        self.actual_params = actual_params
+        self.token = token
+
+        self.func_symbol = None
 
 
 class Then(AST):
