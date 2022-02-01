@@ -247,27 +247,6 @@ class SemanticAnalyzer(NodeVisitor):
         if var_symbol is None:
             self.error(error_code=ErrorCode.ID_NOT_FOUND, token=node.token)
 
-    '''
-
-    def visit_ProcedureCall(self, node):
-        print("Visited procedure call")
-        proc_symbol = self.current_scope.lookup(node.proc_name)
-        node.proc_symbol = proc_symbol
-        formal_params = proc_symbol.params
-        actual_params = node.actual_params
-
-        print("Params: ", formal_params, len(formal_params), actual_params, len(actual_params))
-        if len(actual_params) != len(formal_params):
-            print("Error")
-            self.error(
-                error_code=ErrorCode.WRONG_PARAMS_NUM,
-                token=node.token,
-            )
-
-        for param_node in node.actual_params:
-            self.visit(param_node)
-            
-    '''
 
     def visit_ProcedureCall(self, node):
 
@@ -276,6 +255,7 @@ class SemanticAnalyzer(NodeVisitor):
         print("Proc_symbol: " ,proc_symbol)
         # accessed by the interpreter when executing procedure call
         node.proc_symbol = proc_symbol
+
 
         for param_node in node.actual_params:
             self.visit(param_node)

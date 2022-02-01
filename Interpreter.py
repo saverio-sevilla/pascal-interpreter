@@ -17,8 +17,7 @@ class Interpreter(NodeVisitor):
 
     ''' GLOBAL_MEMORY (dictionary) stores the values of the variables declared in the program
 
-    GLOBAL_MEMORY (dizionario) contiene i valori di tutte le variabili dichiarate nel programma
-    Serve fino a quando non sara' implementato l'IO
+    GLOBAL_MEMORY (dizionario) contiene i valori delle variabili dichiarate nel programma
 
     Interpreter visit functions for AST nodes
     Funzioni di visita per i nodi AST
@@ -45,14 +44,14 @@ class Interpreter(NodeVisitor):
         self.call_stack.pop()
 
     def log(self, msg):
-            print(msg)
+        print(msg)
 
-    def visit_Block(self, node):
+    def visit_Block(self, node: Block):
         for declaration in node.declarations:
             self.visit(declaration)
         self.visit(node.compound_statement)
 
-    def visit_VarDecl(self, node):
+    def visit_VarDecl(self, node: VarDecl):
 
         if hasattr(node.type_node, 'range'):
             name = node.var_node.token.value
@@ -63,15 +62,15 @@ class Interpreter(NodeVisitor):
             ar[name] = CDict(min_range, max_range)
 
 
-    def visit_Type(self, node):
+    def visit_Type(self, node: Type):
         pass
 
 
-    def visit_ArrayType(self, node):
+    def visit_ArrayType(self, node: ArrayType):
         pass
 
 
-    def visit_BinOp(self, node):
+    def visit_BinOp(self, node: BinOp):
         if node.op.type == TokenType.PLUS:
             return self.visit(node.left) + self.visit(node.right)
         elif node.op.type == TokenType.MINUS:
@@ -161,17 +160,17 @@ class Interpreter(NodeVisitor):
     def visit_NoOp(self, node):
         pass
 
-    def visit_ProcedureDecl(self, node):
+    def visit_ProcedureDecl(self, node: ProcedureDecl):
         pass
 
-    def visit_ProcedureCall(self, node):
+    def visit_ProcedureCall(self, node: ProcedureCall):
         proc_name = node.proc_name
         proc_symbol = node.proc_symbol
 
         ar = ActivationRecord(
             name=proc_name,
             type=ARType.PROCEDURE,
-            nesting_level=proc_symbol.scope_level + 1,
+            nesting_level = proc_symbol.scope_level + 1,
         )
 
         formal_params = proc_symbol.formal_params
@@ -194,7 +193,7 @@ class Interpreter(NodeVisitor):
         self.call_stack.pop()
 
 
-    def visit_Assign(self, node):  #Modify for new dict
+    def visit_Assign(self, node: Assign):  #Modify for new dict
         if hasattr(node.left, 'index'):
             var_name = node.left.value
             var_value = self.visit(node.right)
@@ -212,7 +211,7 @@ class Interpreter(NodeVisitor):
             ar = self.call_stack.peek()
             ar[var_name] = var_value
 
-    def visit_Var(self, node):
+    def visit_Var(self, node: Var):
         var_name = node.value
 
         ar = self.call_stack.peek()
@@ -220,7 +219,7 @@ class Interpreter(NodeVisitor):
 
         return var_value
 
-    def visit_ArrayVar(self, node):
+    def visit_ArrayVar(self, node: ArrayVar):
         var_name = node.value
         index = node.index
         ar = self.call_stack.peek()

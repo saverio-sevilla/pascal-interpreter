@@ -76,7 +76,7 @@ class Type(AST):
 
 class ArrayType(AST):
     def __init__(self, token: Token, range: Token):
-        # Built using a TYPE token (INTEGER, BOOL, etc) and a RANGE token
+        # Built using a TYPE token and a RANGE token
         self.token = token
         self.value = token.value
         self.range = range.value  # Tuple (min_range, max_range)
@@ -114,7 +114,7 @@ class ProcedureDecl(AST):
 
 
 class ProcedureCall(AST):
-    def __init__(self, proc_name, actual_params, token):
+    def __init__(self, proc_name: str, actual_params: list, token: Token):
         self.proc_name = proc_name
         self.actual_params = actual_params  # a list of AST nodes
         self.token = token
@@ -123,7 +123,7 @@ class ProcedureCall(AST):
 
 
 class FunctionDecl(AST):
-    def __init__(self, proc_name, formal_params, block_node, return_type):
+    def __init__(self, proc_name: str, formal_params: list, block_node: Block, return_type: Type):
         self.proc_name = proc_name
         self.formal_params = formal_params
         self.block_node = block_node
@@ -132,7 +132,7 @@ class FunctionDecl(AST):
 
 
 class FunctionCall(AST): #Check for reference to symbol
-    def __init__(self, func_name: str, actual_params, token):
+    def __init__(self, func_name: str, actual_params: list, token: Token):
         self.func_name = func_name
         self.actual_params = actual_params
         self.token = token
@@ -174,13 +174,13 @@ class While(AST):
 
 
 class Writeln(AST):
-    def __init__(self, token: Token, token_list):
+    def __init__(self, token: Token, token_list: list):
         self.token = token
         self.token_list = token_list
 
 
 class Readln(AST):
-    def __init__(self, token: Token, token_list):
+    def __init__(self, token: Token, token_list: list):
         self.token = token
         self.token_list = token_list
 
