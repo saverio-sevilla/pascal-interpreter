@@ -1,8 +1,4 @@
-from SemanticAnalysis import *
-from Parser import Parser
-from Lexer import Lexer
-from Interpreter import Interpreter
-from Token import _build_reserved_keywords
+from SPI import execute
 
 
 
@@ -34,21 +30,8 @@ def main():
     end.  { Main }
 
     """
-    RESERVED_KEYWORDS = _build_reserved_keywords()
-    lexer = Lexer(text)
-    parser = Parser(lexer)
-    tree = parser.parse()
 
-    semantic_analyzer = SemanticAnalyzer()
-    try:
-        semantic_analyzer.visit(tree)
-    except Exception as e:
-        print(e)
-
-    interpreter = Interpreter(tree)
-    result = interpreter.interpret()
-
-
+    execute(text)
 
 if __name__ == '__main__':
     main()
