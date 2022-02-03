@@ -45,8 +45,6 @@ class Lexer(object):
         else:
             return self.text[peek_pos]
 
-    #Use modified peek? 
-
 
     def skip_whitespace(self):
         while self.current_char is not None and self.current_char.isspace():

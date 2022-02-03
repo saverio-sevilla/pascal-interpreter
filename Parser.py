@@ -170,13 +170,13 @@ class Parser(object):
         elif self.current_token.type == TokenType.ARRAY:  # Modified for arrays
             self.eat(self.current_token.type)
             if self.current_token.type == TokenType.RANGE:
-                range = self.current_token
+                range_ = self.current_token
                 self.eat(self.current_token.type)
                 self.eat(TokenType.OF)
                 if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
                     token = self.current_token
                     self.eat(self.current_token.type)
-                return ArrayType(token, range)
+                return ArrayType(token, range_)
         return Type(token)
 
 
@@ -562,7 +562,6 @@ class Parser(object):
             return node
 
     def parse(self):
-
 
         node = self.program()
         if self.current_token.type != TokenType.EOF:
