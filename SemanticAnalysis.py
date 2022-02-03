@@ -6,6 +6,8 @@ from Errors import SemanticError, ErrorCode
 #          NODE VISITOR             #
 #####################################
 
+#Add support for arrays
+
 
 class NodeVisitor(object):
 

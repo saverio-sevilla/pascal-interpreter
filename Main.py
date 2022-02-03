@@ -1,6 +1,7 @@
 from SPI import execute
 
-
+# Add arrays to semantic analysis
+# Add support to use variables as index in arrays
 
 def main():
 

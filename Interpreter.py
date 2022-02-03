@@ -193,15 +193,13 @@ class Interpreter(NodeVisitor):
         self.call_stack.pop()
 
 
-    def visit_Assign(self, node: Assign):  #Modify for new dict
+    def visit_Assign(self, node: Assign):
+
         if hasattr(node.left, 'index'):
             var_name = node.left.value
             var_value = self.visit(node.right)
             var_index = node.left.index
             ar = self.call_stack.peek()
-
-            #ar[var_name][var_index] = var_value
-
             ar[var_name].add(var_index, var_value)
 
         else:

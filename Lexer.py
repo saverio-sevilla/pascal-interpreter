@@ -1,10 +1,10 @@
-from Token import *
+from Token import TokenType, Token, RESERVED_KEYWORDS
 from Errors import LexerError
 
-#Added array function
 
 class Lexer(object):
     def __init__(self, text):
+
         self.text = text
         self.pos = 0    # Position in the text/ Posizione nel testo
         self.current_char = self.text[self.pos]
@@ -13,6 +13,7 @@ class Lexer(object):
 
 
     def error(self):
+
         s = "Lexer error on '{lexeme}' line: {lineno} column: {column}".format(
             lexeme=self.current_char,
             lineno=self.lineno,
@@ -21,7 +22,7 @@ class Lexer(object):
         raise LexerError(message=s)
 
 
-    def advance(self):
+    def advance(self, steps=1):
 
         #Method to advance in the text, setting current_char to the new character
         #Metodo per avanzare di un carattere nel testo, current_char viene assegnato al nuovo carattere
@@ -29,12 +30,12 @@ class Lexer(object):
         if self.current_char == '\n':
             self.lineno += 1
             self.column = 0
-        self.pos += 1
+        self.pos += steps
         if self.pos > len(self.text) - 1:
             self.current_char = None  # Reached the EOF
         else:
             self.current_char = self.text[self.pos]
-            self.column += 1
+            self.column += steps
 
 
     def peek(self) -> str:
@@ -142,7 +143,7 @@ class Lexer(object):
 
     def get_index(self):
         index = self.number_int()
-        if self.current_char is "]":
+        if self.current_char == "]":
             self.advance()
         else:
             print("Did not find ] at end of range")
@@ -161,10 +162,10 @@ class Lexer(object):
 
     def get_range(self):
         lower_range = self.number_int()
-        while self.current_char is ".":
+        while self.current_char == ".":
             self.advance()
         upper_range = self.number_int()
-        if self.current_char is "]":
+        if self.current_char == "]":
             self.advance()
         else:
             print("Did not find ] at end of range")
@@ -197,8 +198,7 @@ class Lexer(object):
                 self.skip_comment()
                 continue
 
-
-            if self.current_char == '[':
+            if self.current_char == '[':  #Modify
                 self.advance()
                 if self.check_if_index():
                     index = self.get_index()
@@ -230,52 +230,23 @@ class Lexer(object):
                 return self.number()
 
             '''
-            The operators which use peek() must be ahead in the list to
-            avoid ambiguity (ex. <= and < start with the same char)
+            The operators which use peek() must be ahead in the queue to
+            avoid missing them  (ex. <= and < start with the same character)
             '''
 
-            if self.current_char == ':' and self.peek() == '=':
+            try:
+                token_type = TokenType(self.current_char + self.peek())
+            except ValueError:
+                pass
+            else:
+                # create a token with a single-character lexeme as its value
                 token = Token(
-                    type=TokenType.ASSIGN,
-                    value=TokenType.ASSIGN.value,  # ':='
+                    type=token_type,
+                    value=token_type.value,  # e.g. ';', '.', etc
                     lineno=self.lineno,
                     column=self.column,
                 )
-                self.advance()
-                self.advance()
-                return token
-
-            if self.current_char == '<' and self.peek() == '=':
-                token = Token(
-                    type=TokenType.LESS_EQ,
-                    value=TokenType.LESS_EQ,
-                    lineno=self.lineno,
-                    column=self.column
-                )
-                self.advance()
-                self.advance()
-                return token
-
-            if self.current_char == '>' and self.peek() == '=':
-                token = Token(
-                    type=TokenType.GREAT_EQ,
-                    value=TokenType.GREAT_EQ,
-                    lineno=self.lineno,
-                    column=self.column
-                )
-                self.advance()
-                self.advance()
-                return token
-
-            if self.current_char == '<' and self.peek() == '>':
-                token = Token(
-                    type=TokenType.NOT_EQ,
-                    value=TokenType.NOT_EQ,
-                    lineno=self.lineno,
-                    column=self.column
-                )
-                self.advance()
-                self.advance()
+                self.advance(steps=2)
                 return token
 
 
@@ -296,4 +267,5 @@ class Lexer(object):
                 )
                 self.advance()
                 return token
+
         return Token(type=TokenType.EOF, value=None)

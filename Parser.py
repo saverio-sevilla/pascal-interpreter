@@ -242,7 +242,9 @@ class Parser(object):
 
 
     def proccall_statement(self):
+
         """proccall_statement : ID LPAREN (expr (COMMA expr)*)? RPAREN"""
+
         token = self.current_token
 
         proc_name = self.current_token.value
@@ -417,7 +419,8 @@ class Parser(object):
                 index = self.current_token
                 self.eat(TokenType.INDEX)
                 return ArrayVar(token, index)
-        return node #Type Var
+
+        return node # if this is called the node is of Var type
 
 
     def empty(self):
