@@ -30,7 +30,6 @@ def main():
         Alpha(3 + 5, 7);  { procedure call }
 
     end.  { Main }
-
     """
 
     execute(text)
