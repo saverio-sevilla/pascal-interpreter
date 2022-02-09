@@ -1,5 +1,7 @@
 from Nodes import *
 from Errors import ErrorCode, ParserError
+from Lexer import Lexer
+from Token import TokenType
 
 
 # Modify first_priority, assignment, variable, type_spec

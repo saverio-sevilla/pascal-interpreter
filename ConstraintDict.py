@@ -1,5 +1,4 @@
-# Represents arrays in the stack
-
+# Used to represent static arrays in the stack
 
 class CDict:
 
@@ -9,7 +8,7 @@ class CDict:
         self.data = {}
 
     def error(self):
-        print("Error, array index out of bounds")
+        print("Error: array index out of bounds")
 
     def reshape(self, min_range, max_range):
         self.min_range = min_range
