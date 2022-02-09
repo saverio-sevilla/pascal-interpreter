@@ -29,7 +29,7 @@ class Num(AST):
 class Boolean(AST):
     def __init__(self, token: Token):
         self.token = token
-        if token.value is 'TRUE':
+        if token.value == 'TRUE':
             self.value = True
         else:
             self.value = False
@@ -61,7 +61,7 @@ class Var(AST):
         self.value = token.value
 
 
-class ArrayVar(AST):
+class ArrayVar(AST):  # Change to not use an INDEX token but to work like the ASSIGN node
     # Built using an ARRAY token and an INDEX token
     def __init__(self, token: Token, index: Token):
         self.token = token
@@ -75,7 +75,7 @@ class Type(AST):
         self.value = token.value
 
 
-class ArrayType(AST):
+class ArrayType(AST):  # Change to have a list of 2 Num tokens representing the range
     def __init__(self, token: Token, range: Token):
         # Built using a TYPE token and a RANGE token
         self.token = token
@@ -90,7 +90,7 @@ class Program(AST):
 
 
 class Block(AST):
-    def __init__(self, declarations: AST, compound_statement: Compound):
+    def __init__(self, declarations: list, compound_statement: Compound):
         self.declarations = declarations
         self.compound_statement = compound_statement
 

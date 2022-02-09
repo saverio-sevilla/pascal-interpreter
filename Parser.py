@@ -4,9 +4,6 @@ from Lexer import Lexer
 from Token import TokenType
 
 
-# Modify first_priority, assignment, variable, type_spec
-
-
 ###############
 #   PARSER    #
 ###############
@@ -122,7 +119,6 @@ class Parser(object):
         """ formal_parameter_list : formal_parameters
                                   | formal_parameters SEMI formal_parameter_list
         """
-        # procedure Foo();
         if not self.current_token.type == TokenType.ID:
             return []
 
@@ -403,12 +399,17 @@ class Parser(object):
             self.eat(TokenType.STRING)
         else:
             self.eat(TokenType.ID)
+            # Change this part to not rely on the INDEX token
+            # but rather on finding a SQ_PARENT token and calling expr()
+            # to find the index
+            # the variable expr() is then assigned to the ArrayVar type node
+
             if self.current_token.type == TokenType.INDEX:
                 index = self.current_token
                 self.eat(TokenType.INDEX)
                 return ArrayVar(token, index)
 
-        return node  # if this is called the node is of Var type
+        return node
 
     def empty(self):
         return NoOp()

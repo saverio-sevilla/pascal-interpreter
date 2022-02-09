@@ -191,7 +191,7 @@ class Interpreter(NodeVisitor):
 
     def visit_Assign(self, node):
 
-        if hasattr(node.left, 'index'):
+        if hasattr(node.left, 'index'):  # Change this method for the new ArrayVar type
             var_name = node.left.value
             var_value = self.visit(node.right)
             var_index = node.left.index
@@ -201,7 +201,6 @@ class Interpreter(NodeVisitor):
         else:
             var_name = node.left.value
             var_value = self.visit(node.right)
-
             ar = self.call_stack.peek()
             ar[var_name] = var_value
 
@@ -213,13 +212,10 @@ class Interpreter(NodeVisitor):
 
         return var_value
 
-    def visit_ArrayVar(self, node: ArrayVar):
+    def visit_ArrayVar(self, node: ArrayVar):  # Modify to use an expr() node as the index
         var_name = node.value
         index = node.index
         ar = self.call_stack.peek()
-
-        #var_value = ar.get(var_name)[index] #Modify
-
         var_value = ar.get(var_name).get(index)
 
         return var_value
