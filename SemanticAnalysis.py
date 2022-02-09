@@ -6,18 +6,19 @@ from Errors import SemanticError, ErrorCode
 #          NODE VISITOR             #
 #####################################
 
-#Add support for arrays
+# Add support for arrays
 
 
 class NodeVisitor(object):
 
     def visit(self, node):
-        method_name = 'visit_' + type(node).__name__ #Function that produces the method names
+        method_name = 'visit_' + type(node).__name__  # Function that produces the method names
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
 
     def generic_visit(self, node):
         raise Exception('No visit_{} method'.format(type(node).__name__))
+
 
 class Symbol(object):
     def __init__(self, name, type=None):
@@ -27,6 +28,7 @@ class Symbol(object):
 
 
 class VarSymbol(Symbol):
+
     def __init__(self, name, type):
         super().__init__(name, type)
 
@@ -86,15 +88,14 @@ class ScopedSymbolTable(object):
         self.insert(BuiltinTypeSymbol('STRING'))
         self.insert(BuiltinTypeSymbol('ARRAY'))
 
-    def __str__(self): #Print function for scope tables
+    def __str__(self):  # Print function for scope tables
         h1 = 'SCOPE (SCOPED SYMBOL TABLE)'
         lines = ['\n', h1, '=' * len(h1)]
         for header_name, header_value in (
             ('Scope name', self.scope_name),
             ('Scope level', self.scope_level),
             ('Enclosing scope',
-             self.enclosing_scope.scope_name if self.enclosing_scope else None
-            )
+             self.enclosing_scope.scope_name if self.enclosing_scope else None)
         ):
             lines.append('%-15s: %s' % (header_name, header_value))
         h2 = 'Scope (Scoped symbol table) contents'
@@ -154,7 +155,7 @@ class SemanticAnalyzer(NodeVisitor):
         global_scope = ScopedSymbolTable(
             scope_name='global',
             scope_level=1,
-            enclosing_scope=self.current_scope, # None
+            enclosing_scope=self.current_scope,  # None
         )
         global_scope._init_builtins()
         self.current_scope = global_scope
@@ -249,19 +250,16 @@ class SemanticAnalyzer(NodeVisitor):
         if var_symbol is None:
             self.error(error_code=ErrorCode.ID_NOT_FOUND, token=node.token)
 
-
     def visit_ProcedureCall(self, node):
 
         proc_symbol = self.current_scope.lookup(node.proc_name)
 
-        print("Proc_symbol: " ,proc_symbol)
+        print("Proc_symbol: ", proc_symbol)
         # accessed by the interpreter when executing procedure call
         node.proc_symbol = proc_symbol
 
-
         for param_node in node.actual_params:
             self.visit(param_node)
-
 
     def visit_Num(self, node):
         pass

@@ -3,12 +3,12 @@ from Parser import Parser
 from Lexer import Lexer
 from Interpreter import Interpreter
 
+
 def execute(text):
 
     lexer = Lexer(text)
     parser = Parser(lexer)
     tree = parser.parse()
-
     semantic_analyzer = SemanticAnalyzer()
 
     try:

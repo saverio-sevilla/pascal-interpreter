@@ -46,12 +46,12 @@ class Interpreter(NodeVisitor):
     def log(self, msg):
         print(msg)
 
-    def visit_Block(self, node: Block):
+    def visit_Block(self, node):
         for declaration in node.declarations:
             self.visit(declaration)
         self.visit(node.compound_statement)
 
-    def visit_VarDecl(self, node: VarDecl):
+    def visit_VarDecl(self, node):
 
         if hasattr(node.type_node, 'range'):
             name = node.var_node.token.value
@@ -61,14 +61,11 @@ class Interpreter(NodeVisitor):
             max_range = node.type_node.range[1]
             ar[name] = CDict(min_range, max_range)
 
-
     def visit_Type(self, node: Type):
         pass
 
-
     def visit_ArrayType(self, node: ArrayType):
         pass
-
 
     def visit_BinOp(self, node: BinOp):
         if node.op.type == TokenType.PLUS:
@@ -125,13 +122,13 @@ class Interpreter(NodeVisitor):
             if type(token) is tuple:
                 ar = self.call_stack.peek()
                 var_value = ar.get(token[0].value).get(token[1].value)
-                print(var_value, end = "")
+                print(var_value, end="")
             elif token.type is TokenType.STRING:
-                print(token.value, end = "")
+                print(token.value, end="")
             elif token.type is TokenType.ID:
                 ar = self.call_stack.peek()
                 var_value = ar[token.value]
-                print(var_value, end = "")
+                print(var_value, end="")
 
     def visit_Readln(self, node: Readln):
         for token in node.token_list:
@@ -170,7 +167,7 @@ class Interpreter(NodeVisitor):
         ar = ActivationRecord(
             name=proc_name,
             type=ARType.PROCEDURE,
-            nesting_level = proc_symbol.scope_level + 1,
+            nesting_level=proc_symbol.scope_level + 1,
         )
 
         formal_params = proc_symbol.formal_params
@@ -192,8 +189,7 @@ class Interpreter(NodeVisitor):
 
         self.call_stack.pop()
 
-
-    def visit_Assign(self, node: Assign):
+    def visit_Assign(self, node):
 
         if hasattr(node.left, 'index'):
             var_name = node.left.value
@@ -227,7 +223,6 @@ class Interpreter(NodeVisitor):
         var_value = ar.get(var_name).get(index)
 
         return var_value
-
 
     def interpret(self):
         tree = self.tree

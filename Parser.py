@@ -2,7 +2,7 @@ from Nodes import *
 from Errors import ErrorCode, ParserError
 
 
-#Modify first_priority, assignment, variable, type_spec
+# Modify first_priority, assignment, variable, type_spec
 
 
 ###############
@@ -57,7 +57,6 @@ class Parser(object):
         node = Block(declaration_nodes, compound_statement_node)
         return node
 
-
     def declarations(self) -> list:
         """
         declarations : (VAR (variable_declaration SEMI)+)? procedure_declaration*
@@ -96,7 +95,6 @@ class Parser(object):
         self.eat(TokenType.SEMI)
         return proc_decl
 
-
     def formal_parameters(self) -> list:
         """ formal_parameters : ID (COMMA ID)* COLON type_spec """
         param_nodes = []
@@ -118,7 +116,6 @@ class Parser(object):
 
         return param_nodes
 
-
     def formal_parameter_list(self) -> list:
         """ formal_parameter_list : formal_parameters
                                   | formal_parameters SEMI formal_parameter_list
@@ -135,7 +132,6 @@ class Parser(object):
 
         return param_nodes
 
-
     def variable_declaration(self) -> list:
         """variable_declaration : ID (COMMA ID)* COLON type_spec"""
         var_nodes = [Var(self.current_token)]  # first ID
@@ -148,10 +144,10 @@ class Parser(object):
 
         self.eat(TokenType.COLON)
 
-        type_node = self.type_spec() #Type node or Arraytype node
+        type_node = self.type_spec()  # Type node or Arraytype node
         # This calls the type_spec method to assign the parameter to the right type
         var_declarations = [
-            VarDecl(var_node, type_node) #Types: Var, Type or Arraytype
+            VarDecl(var_node, type_node)  # Types: Var, Type or Arraytype
             for var_node in var_nodes
         ]
         return var_declarations
@@ -178,7 +174,6 @@ class Parser(object):
                     self.eat(self.current_token.type)
                 return ArrayType(token, range_)
         return Type(token)
-
 
     def compound_statement(self) -> Compound:
         """
@@ -220,9 +215,8 @@ class Parser(object):
                   | empty
         """
 
-        if (self.current_token.type == TokenType.ID and
-                self.lexer.current_char == '('
-        ):
+        if (self.current_token.type == TokenType.ID
+                and self.lexer.current_char == '('):
             node = self.proccall_statement()
         elif self.current_token.type == TokenType.ID:
             node = self.assignment_statement()
@@ -239,7 +233,6 @@ class Parser(object):
         else:
             node = self.empty()
         return node
-
 
     def proccall_statement(self):
 
@@ -269,22 +262,19 @@ class Parser(object):
         )
         return node
 
-
     def while_statement(self):
         token = self.current_token
         self.eat(TokenType.WHILE)
         condition_node = self.expr()
         do_node = self.do_statement()
 
-        return While(token=token, condition_node = condition_node, do_node = do_node)
-
+        return While(token=token, condition_node=condition_node, do_node=do_node)
 
     def do_statement(self):
         token = self.current_token
         self.eat(TokenType.DO)
         child = self.statement()
         return Do(token=token, child=child)
-
 
     def conditional_statement(self):
 
@@ -301,7 +291,7 @@ class Parser(object):
         if self.current_token.type == TokenType.ELSE:
             else_node = self.else_statement()
 
-        return Condition(token=token, condition_node = condition_node, then_node= then_node, else_node=else_node)
+        return Condition(token=token, condition_node=condition_node, then_node=then_node, else_node=else_node)
 
     def then_statement(self):
 
@@ -317,7 +307,6 @@ class Parser(object):
         child = self.statement()
         return Else(token=token, child=child)
 
-
     def writeln_statement(self):
         '''
 
@@ -325,7 +314,7 @@ class Parser(object):
 
         '''
 
-        #Modify to save variables and array variables instead of saving tokens
+        # Modify to save variables and array variables instead of saving tokens
 
         token = self.current_token
         token_list = []
@@ -341,10 +330,9 @@ class Parser(object):
             if self.current_token.type == TokenType.INDEX:
                 index = self.current_token
                 self.eat(TokenType.INDEX)
-                token_list.append((print_token, index)) #Format (Token, Token)
+                token_list.append((print_token, index))  # Format (Token, Token)
             else:
                 token_list.append(print_token)
-
 
         while self.current_token.type == TokenType.COMMA:
             self.eat(TokenType.COMMA)
@@ -365,14 +353,13 @@ class Parser(object):
 
         return Writeln(token=token, token_list=token_list)
 
+    def readln_statement(self):  # Update to work with array elements and to print strings (optional)
 
-    def readln_statement(self): #Update to work with array elements and to print strings (optional)
         '''
 
         read_statement : READLN LPAREN var* RPAREN
 
         '''
-
 
         token = self.current_token
         token_list = []
@@ -390,7 +377,6 @@ class Parser(object):
         self.eat(TokenType.RPAREN)
 
         return Readln(token=token, token_list=token_list)
-
 
     def assignment_statement(self):
         """
@@ -420,8 +406,7 @@ class Parser(object):
                 self.eat(TokenType.INDEX)
                 return ArrayVar(token, index)
 
-        return node # if this is called the node is of Var type
-
+        return node  # if this is called the node is of Var type
 
     def empty(self):
         return NoOp()
@@ -442,7 +427,7 @@ class Parser(object):
         while self.current_token.type is TokenType.OR:
             token = self.current_token
             self.eat(token.type)
-            node = BinOp(left=node, op=token, right = self.sixth_priority())
+            node = BinOp(left=node, op=token, right=self.sixth_priority())
 
         return node
 
@@ -455,7 +440,7 @@ class Parser(object):
         while self.current_token.type is TokenType.AND:
             token = self.current_token
             self.eat(token.type)
-            node = BinOp(left=node, op=token, right = self.fifth_priority())
+            node = BinOp(left=node, op=token, right=self.fifth_priority())
 
         return node
 
@@ -468,7 +453,7 @@ class Parser(object):
         while self.current_token.type in (TokenType.EQUAL, TokenType.NOT_EQ):
             token = self.current_token
             self.eat(token.type)
-            node = BinOp(left=node, op=token, right = self.fourth_priority())
+            node = BinOp(left=node, op=token, right=self.fourth_priority())
 
         return node
 
@@ -481,10 +466,9 @@ class Parser(object):
         while self.current_token.type in (TokenType.GREATER, TokenType.GREAT_EQ, TokenType.LESSER, TokenType.LESS_EQ):
             token = self.current_token
             self.eat(token.type)
-            node = BinOp(left=node, op=token, right = self.expr())
+            node = BinOp(left=node, op=token, right=self.expr())
 
         return node
-
 
     def third_priority(self):
         """
@@ -558,7 +542,7 @@ class Parser(object):
             self.eat(TokenType.RPAREN)
             return node
         else:
-            node = self.variable()  #Handles array variables (Ex. arr[5])
+            node = self.variable()  # Handles array variables (Ex. arr[5])
             return node
 
     def parse(self):
@@ -570,4 +554,3 @@ class Parser(object):
                 token=self.current_token,
             )
         return node
-

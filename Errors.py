@@ -1,10 +1,12 @@
 from enum import Enum
 
+
 class ErrorCode(Enum):
     UNEXPECTED_TOKEN = 'Unexpected token'
     ID_NOT_FOUND     = 'Identifier not found'
     DUPLICATE_ID     = 'Duplicate id found'
     WRONG_PARAMS_NUM = 'Wrong number of arguments'
+
 
 class Error(Exception):
     def __init__(self, error_code=None, token=None, message=None):
@@ -13,12 +15,14 @@ class Error(Exception):
         # add exception class name before the message
         self.message = f'{self.__class__.__name__}: {message}'
 
+
 class LexerError(Error):
     pass
+
 
 class ParserError(Error):
     pass
 
+
 class SemanticError(Error):
     pass
-

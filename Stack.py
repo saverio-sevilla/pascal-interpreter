@@ -30,7 +30,7 @@ class CallStack:
 class ARType(Enum):
     PROGRAM   = 'PROGRAM'
     PROCEDURE = 'PROCEDURE'
-    FUNCTION = 'FUNCTION'
+    FUNCTION  = 'FUNCTION'
 
 
 class ActivationRecord:

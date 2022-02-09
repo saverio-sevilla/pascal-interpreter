@@ -11,7 +11,6 @@ class Lexer(object):
         self.lineno = 1
         self.column = 1
 
-
     def error(self):
 
         s = "Lexer error on '{lexeme}' line: {lineno} column: {column}".format(
@@ -21,11 +20,9 @@ class Lexer(object):
         )
         raise LexerError(message=s)
 
-
     def advance(self, steps=1):
-
-        #Method to advance in the text, setting current_char to the new character
-        #Metodo per avanzare di un carattere nel testo, current_char viene assegnato al nuovo carattere
+        # Method to advance in the text, setting current_char to the new character
+        # Metodo per avanzare di un carattere nel testo, current_char viene assegnato al nuovo carattere
 
         if self.current_char == '\n':
             self.lineno += 1
@@ -37,19 +34,16 @@ class Lexer(object):
             self.current_char = self.text[self.pos]
             self.column += steps
 
-
-    def peek(self) -> str:
+    def peek(self):
         peek_pos = self.pos + 1
         if peek_pos > len(self.text) - 1:
             return None
         else:
             return self.text[peek_pos]
 
-
     def skip_whitespace(self):
         while self.current_char is not None and self.current_char.isspace():
             self.advance()
-
 
     def skip_comment(self):
 
@@ -60,8 +54,7 @@ class Lexer(object):
             self.advance()
         self.advance()  # the closing curly brace
 
-
-    def array(self): #Maybe requires modified peek function to find the [ ?
+    def array(self):  # Maybe requires modified peek function to find the [ ?
         pass
 
     def string(self) -> Token:
@@ -79,7 +72,6 @@ class Lexer(object):
         token.value = str(result)
 
         return token
-
 
     def number(self) -> Token:
 
@@ -109,10 +101,9 @@ class Lexer(object):
 
         return token
 
-
     def _id(self) -> Token:
 
-        #Finds reserved keywords and identifiers
+        # Finds reserved keywords and identifiers
 
         token = Token(type=None, value=None, lineno=self.lineno, column=self.column)
 
@@ -128,7 +119,7 @@ class Lexer(object):
             token.value = result
 
         elif token_type == TokenType.ARRAY:
-            print("Found array")    #Returns token with type ARRAY and value [range min, range max]
+            print("Found array")    # Returns token with type ARRAY and value [range min, range max]
             token.type = token_type
             token.value = result.upper()
 
@@ -137,7 +128,6 @@ class Lexer(object):
             token.value = result.upper()
 
         return token
-
 
     def get_index(self):
         index = self.number_int()
@@ -148,7 +138,6 @@ class Lexer(object):
             self.error()
         return index
 
-
     def check_if_index(self):
         peek_pos = self.pos
         while peek_pos < len(self.text) + 1 and self.text[peek_pos] != ']':
@@ -156,7 +145,6 @@ class Lexer(object):
             if self.text[peek_pos] == '.':
                 return False
         return True
-
 
     def get_range(self):
         lower_range = self.number_int()
@@ -169,8 +157,7 @@ class Lexer(object):
             print("Did not find ] at end of range")
             self.error()
 
-        return (lower_range, upper_range)
-
+        return lower_range, upper_range
 
     def number_int(self):
         result = ''
@@ -180,10 +167,9 @@ class Lexer(object):
         result = int(result)
         return result
 
-
     def get_next_token(self):
 
-        #Main function to identify tokens / Funzione principale per identificare i token
+        # Main function to identify tokens / Funzione principale per identificare i token
 
         while self.current_char is not None:
 
@@ -196,7 +182,7 @@ class Lexer(object):
                 self.skip_comment()
                 continue
 
-            if self.current_char == '[':  #Modify
+            if self.current_char == '[':  # Modify
                 self.advance()
                 if self.check_if_index():
                     index = self.get_index()
@@ -208,16 +194,16 @@ class Lexer(object):
                     )
                     return token
                 else:
-                    range = self.get_range()
+                    range_ = self.get_range()
                     token = Token(
                         type=TokenType.RANGE,
-                        value=range,  # The value is a tuple (low_range, high_index)
+                        value=range_,  # The value is a tuple (low_range, high_index)
                         lineno=self.lineno,
                         column=self.column,
                     )
                     return token
 
-            if self.current_char == '"' or self.current_char == '\'': #For the print function
+            if self.current_char == '"' or self.current_char == '\'':  # For the print function
                 self.advance()
                 return self.string()
 
@@ -246,7 +232,6 @@ class Lexer(object):
                 )
                 self.advance(steps=2)
                 return token
-
 
             try:
                 # get enum member by value, e.g.

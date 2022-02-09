@@ -3,6 +3,7 @@ from SPI import execute
 # Add arrays to semantic analysis
 # Add support to use variables as index in arrays
 
+
 def main():
 
     text = """
@@ -36,3 +37,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

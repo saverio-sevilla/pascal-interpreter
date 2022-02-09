@@ -1,10 +1,11 @@
-from Token import TokenType, Token, RESERVED_KEYWORDS
-from Lexer import Lexer
+from Token import Token
+
 
 class AST(object):
     pass
 
-#Types of AST (abstract syntax trees) nodes / tipi di nodi AST
+# Types of AST (abstract syntax trees) nodes / tipi di nodi AST
+
 
 class BinOp(AST):
     def __init__(self, left: AST, op: Token, right: AST):
@@ -130,8 +131,7 @@ class FunctionDecl(AST):
         self.return_type = return_type
 
 
-
-class FunctionCall(AST): #Check for reference to symbol
+class FunctionCall(AST):  # Check for reference to symbol
     def __init__(self, func_name: str, actual_params: list, token: Token):
         self.func_name = func_name
         self.actual_params = actual_params

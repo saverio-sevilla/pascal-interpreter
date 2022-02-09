@@ -2,8 +2,9 @@
 
 from enum import Enum
 
+
 class Token(object):
-    def __init__(self, type, value, lineno = None, column = None):
+    def __init__(self, type, value, lineno=None, column=None):
         self.type = type
         self.value = value
         self.lineno = lineno
@@ -41,7 +42,7 @@ class TokenType(Enum):
     DOT = '.'
     COLON = ':'
     QUOTE = '"'
-    S_QUOTE ='\''
+    S_QUOTE = '\''
     COMMA = ','
     # Reserved keywords
     PROGRAM = 'PROGRAM'
@@ -100,5 +101,6 @@ def _build_reserved_keywords():
         for token_type in token_type_list[start_index:end_index + 1]
     }
     return keyword_dict
+
 
 RESERVED_KEYWORDS = _build_reserved_keywords()
