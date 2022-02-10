@@ -1,6 +1,7 @@
 from SPI import execute
 
 # Add typechecking
+# Add const and type declarations
 
 def main():
 
@@ -20,7 +21,10 @@ def main():
             a := number;
             b := 10 * a + 10 * number DIV 4;
             c := a - - b;
-            arr[a] := 3;
+            arr[2] := 3;
+            arr[2] := arr[2] + 3;
+            writeln("Hello world: ", b , " ",  arr[2], " world", "\n");
+            readln("input", a);
     END;
     x := 11;
     y := 20 / 7 + 3.14;

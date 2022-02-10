@@ -12,7 +12,7 @@ from Errors import SemanticError, ErrorCode
 class NodeVisitor(object):
 
     def visit(self, node):
-        method_name = 'visit_' + type(node).__name__  # Function that produces the method names
+        method_name = 'visit_' + type(node).__name__  # Produces the correct method name for the node type
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
 

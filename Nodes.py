@@ -64,7 +64,7 @@ class IndexVar(AST):
     def __init__(self, token: Token, index: AST):
         self.token = token
         self.value = token.value
-        self.index = index
+        self.index = index  # This is an ast variable, not a token variable
 
 
 class Type(AST):
@@ -171,15 +171,15 @@ class While(AST):
 
 
 class Writeln(AST):
-    def __init__(self, token: Token, token_list: list):
+    def __init__(self, token: Token, node_list: list):
         self.token = token
-        self.token_list = token_list
+        self.node_list = node_list
 
 
 class Readln(AST):
-    def __init__(self, token: Token, token_list: list):
+    def __init__(self, token: Token, node_list: list):
         self.token = token
-        self.token_list = token_list
+        self.node_list = node_list
 
 
 class NoOp(AST):

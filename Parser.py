@@ -143,10 +143,10 @@ class Parser(object):
 
         self.eat(TokenType.COLON)
 
-        type_node = self.type_spec()  # Type node or Arraytype node
+        type_node = self.type_spec()  # Type node or RangeType node
         # This calls the type_spec method to assign the parameter to the right type
         var_declarations = [
-            VarDecl(var_node, type_node)  # Types: Var, Type or Arraytype
+            VarDecl(var_node, type_node)  # Types: Var, Type or RangeType
             for var_node in var_nodes
         ]
         return var_declarations
@@ -320,75 +320,39 @@ class Parser(object):
         return Else(token=token, child=child)
 
     def writeln_statement(self):
-        '''
 
-        write_statement : WRITELN LPAREN string* var* arrayvar* RPAREN
-
-        '''
-
-        # Modify to save variables and array variables instead of saving tokens
-
+        node_list = []
         token = self.current_token
-        token_list = []
         self.eat(TokenType.WRITELN)
         self.eat(TokenType.LPAREN)
 
-        if self.current_token.type == TokenType.STRING:
-            token_list.append(self.current_token)
-            self.eat(TokenType.STRING)
-        else:
-            print_token = self.current_token
-            self.eat(TokenType.ID)
-            if self.current_token.type == TokenType.INDEX:
-                index = self.current_token
-                self.eat(TokenType.INDEX)
-                token_list.append((print_token, index))  # Format (Token, Token)
-            else:
-                token_list.append(print_token)
+        node = self.variable()
+        node_list.append(node)
 
         while self.current_token.type == TokenType.COMMA:
             self.eat(TokenType.COMMA)
+            node = self.variable()
+            node_list.append(node)
 
-            if self.current_token.type == TokenType.STRING:
-                token_list.append(self.current_token)
-                self.eat(TokenType.STRING)
-            else:
-                print_token = self.current_token
-                self.eat(TokenType.ID)
-                if self.current_token.type == TokenType.INDEX:
-                    index = self.current_token
-                    self.eat(TokenType.INDEX)
-                    token_list.append((print_token, index))  # Format (Token, Token)
-                else:
-                    token_list.append(print_token)
         self.eat(TokenType.RPAREN)
+        return Writeln(token=token, node_list=node_list)
 
-        return Writeln(token=token, token_list=token_list)
-
-    def readln_statement(self):  # Update to work with array elements and to print strings (optional)
-
-        '''
-
-        read_statement : READLN LPAREN var* RPAREN
-
-        '''
-
+    def readln_statement(self):
+        node_list = []
         token = self.current_token
-        token_list = []
         self.eat(TokenType.READLN)
         self.eat(TokenType.LPAREN)
-
-        token_list.append(self.current_token)
-        self.eat(TokenType.ID)
+        node = self.variable()
+        node_list.append(node)
 
         while self.current_token.type == TokenType.COMMA:
             self.eat(TokenType.COMMA)
-            token_list.append(self.current_token)
-            self.eat(TokenType.ID)
+            node = self.variable()
+            node_list.append(node)
 
         self.eat(TokenType.RPAREN)
 
-        return Readln(token=token, token_list=token_list)
+        return Readln(token=token, node_list=node_list)
 
     def assignment_statement(self):
         """
@@ -407,25 +371,18 @@ class Parser(object):
         """
 
         token = self.current_token
-        node = Var(token)
 
         if self.current_token.type == TokenType.STRING:
             self.eat(TokenType.STRING)
         else:
             self.eat(TokenType.ID)
-
-            # Change this part to not rely on the INDEX token
-            # but rather on finding a SQ_PARENT token and calling expr()
-            # to find the index
-            # the variable expr() is then assigned to the ArrayVar type node
-
             if self.current_token.type == TokenType.L_SQ_PAREN:
                 self.eat(TokenType.L_SQ_PAREN)
                 index = self.expr()
                 self.eat(TokenType.R_SQ_PAREN)
                 return IndexVar(token, index)
 
-        return node
+        return Var(token)
 
     def empty(self):
         return NoOp()

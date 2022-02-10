@@ -125,22 +125,21 @@ class Interpreter(NodeVisitor):
             self.visit(child)
 
     def visit_Writeln(self, node: Writeln):
-        for token in node.token_list:
-            if type(token) is tuple:
-                ar = self.call_stack.peek()
-                var_value = ar.get(token[0].value).get(token[1].value)
-                print(var_value, end="")
-            elif token.type is TokenType.STRING:
-                print(token.value, end="")
-            elif token.type is TokenType.ID:
-                ar = self.call_stack.peek()
-                var_value = ar[token.value]
-                print(var_value, end="")
+        for subnode in node.node_list:
+            print(self.visit(subnode), end = "")
 
     def visit_Readln(self, node: Readln):
-        for token in node.token_list:
-            ar = self.call_stack.peek()
-            ar[token.value] = input("Enter an input: ")
+        for node in node.node_list:
+            if node.token.type == TokenType.STRING:
+                print(self.visit(node), end = "")
+            elif hasattr(node, 'index'):
+                var_index = self.visit(node.index)
+                var_value = input()
+                ar = self.call_stack.peek()
+                ar[node.token.value].add(var_index, var_value)
+            else:
+                ar = self.call_stack.peek()
+                ar[node.token.value] = input()
 
     def visit_Condition(self, node: Condition):
         if self.visit(node.condition_node) is True:
@@ -198,7 +197,7 @@ class Interpreter(NodeVisitor):
 
     def visit_Assign(self, node):
 
-        if hasattr(node.left, 'index'):  # Change this method for the new ArrayVar type
+        if hasattr(node.left, 'index'):
             var_name = node.left.value
             var_value = self.visit(node.right)
             var_index = self.visit(node.left.index)
@@ -212,8 +211,11 @@ class Interpreter(NodeVisitor):
             ar[var_name] = var_value
 
     def visit_Var(self, node: Var):
-        var_name = node.value
 
+        if node.token.type is TokenType.STRING:  # Used by the print function
+            return node.token.value
+
+        var_name = node.value
         ar = self.call_stack.peek()
         var_value = ar.get(var_name)
 
