@@ -81,7 +81,7 @@ class Lexer(object):
             result += self.current_char
             self.advance()
 
-        if self.current_char == '.':
+        if self.current_char == '.' and self.peek().isdigit():
             result += self.current_char
             self.advance()
 
@@ -123,45 +123,6 @@ class Lexer(object):
 
         return token
 
-    def get_index(self):
-        index = self.number_int()
-        if self.current_char == "]":
-            self.advance()
-        else:
-            print("Did not find ] at end of range")
-            self.error()
-        return index
-
-    def check_if_index(self):
-        peek_pos = self.pos + 1
-        while peek_pos < len(self.text) + 1 and self.text[peek_pos] != ']':
-            peek_pos += 1
-            if self.text[peek_pos] == '[':
-                return False
-            if self.text[peek_pos] == '.':
-                return False
-        return True
-
-    def get_range(self):
-        lower_range = self.number_int()
-        while self.current_char == ".":
-            self.advance()
-        upper_range = self.number_int()
-        if self.current_char == "]":
-            self.advance()
-        else:
-            print("Did not find ] at end of range")
-            self.error()
-
-        return lower_range, upper_range
-
-    def number_int(self):
-        result = ''
-        while self.current_char is not None and self.current_char.isdigit():
-            result += self.current_char
-            self.advance()
-        result = int(result)
-        return result
 
     def get_next_token(self):
 
@@ -177,36 +138,6 @@ class Lexer(object):
                 self.advance()
                 self.skip_comment()
                 continue
-
-            if self.current_char == '[':
-                if self.check_if_index():
-                    print("FOUND INDEX")
-
-
-
-
-
-
-            if self.current_char == '[':  # Modify
-                self.advance()
-                if self.check_if_index():
-                    index = self.get_index()
-                    token = Token(
-                        type=TokenType.INDEX,
-                        value=index,  # Value is an int
-                        lineno=self.lineno,
-                        column=self.column,
-                    )
-                    return token
-                else:
-                    range_ = self.get_range()
-                    token = Token(
-                        type=TokenType.RANGE,
-                        value=range_,  # The value is a tuple (low_range, high_index)
-                        lineno=self.lineno,
-                        column=self.column,
-                    )
-                    return token
 
             if self.current_char == '"' or self.current_char == '\'':  # For the print function
                 self.advance()

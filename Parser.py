@@ -24,10 +24,11 @@ class Parser(object):
     def eat(self, token_type):
         # Compare the token_type with the token found, if matched "eat" the token, else raise error
         if self.current_token.type == token_type:
+            print("||| Found token: " ,token_type)
             self.current_token = self.lexer.get_next_token()
         else:
-            print(token_type)
-            print(self.current_token.type)
+            print("Expected: ", token_type)
+            print("Found", self.current_token.type)
             self.error(
                 error_code=ErrorCode.UNEXPECTED_TOKEN,
                 token=self.current_token,
@@ -161,35 +162,29 @@ class Parser(object):
         token = self.current_token
         if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
             self.eat(self.current_token.type)
-        elif self.current_token.type == TokenType.ARRAY:  # Modified for arrays
+
+        elif self.current_token.type == TokenType.ARRAY:
             self.eat(self.current_token.type)
-
-            if self.current_token.type == TokenType.L_SQ_PAREN:
-                self.eat(TokenType.L_SQ_PAREN)
-                if self.current_token.type == TokenType.ID:
-                    range_low = self.current_token.value
-                    self.eat(TokenType.ID)
-                else:
-                    print("ERROR: array range contains a value which is not a numeral")
-                while (self.current_token.type == TokenType.DOT):
-                    self.eat(TokenType.DOT)
-                if self.current_token.type == TokenType.ID:
-                    range_high = self.current_token.value
-                    self.eat(TokenType.ID)
-                else:
-                    print("ERROR: array range contains a value which is not a numeral")
-                self.eat(TokenType.R_SQ_PAREN)
-                return RangeType(token, range_low, range_high)
-
-
-            if self.current_token.type == TokenType.RANGE:
-                range_ = self.current_token
+            self.eat(TokenType.L_SQ_PAREN)
+            print("Current token type:" ,self.current_token.type)
+            if self.current_token.type == TokenType.REAL_CONST or self.current_token.type == TokenType.INTEGER_CONST:
+                range_low = self.current_token.value
                 self.eat(self.current_token.type)
-                self.eat(TokenType.OF)
-                if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
-                    token = self.current_token
+                while self.current_token.type == TokenType.DOT:
+                    self.eat(TokenType.DOT)
+                if self.current_token.type == TokenType.REAL_CONST or self.current_token.type == TokenType.INTEGER_CONST:
+                    range_high = self.current_token.value
                     self.eat(self.current_token.type)
-                return ArrayType(token, range_)
+                    self.eat(TokenType.R_SQ_PAREN)
+                    self.eat(TokenType.OF)
+                    if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
+                        # Do something with this!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        token = self.current_token
+                        self.eat(self.current_token.type)
+                    return RangeType(token, range_low, range_high)
+                else:
+                    print("ERROR: array range contains a value which is not a numeral")
+
         return Type(token)
 
     def compound_statement(self) -> Compound:
@@ -427,13 +422,8 @@ class Parser(object):
             if self.current_token.type == TokenType.L_SQ_PAREN:
                 self.eat(TokenType.L_SQ_PAREN)
                 index = self.expr()
-                self.eat(TokenType.L_SQ_PAREN)
+                self.eat(TokenType.R_SQ_PAREN)
                 return IndexVar(token, index)
-
-            if self.current_token.type == TokenType.INDEX:
-                index = self.current_token
-                self.eat(TokenType.INDEX)
-                return ArrayVar(token, index)
 
         return node
 

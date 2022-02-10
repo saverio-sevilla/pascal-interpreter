@@ -20,7 +20,7 @@ def main():
             a := number;
             b := 10 * a + 10 * number DIV 4;
             c := a - - b;
-            arr[5] := 3;
+            arr[a] := 3;
     END;
     x := 11;
     y := 20 / 7 + 3.14;

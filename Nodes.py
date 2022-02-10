@@ -60,17 +60,10 @@ class Var(AST):
         self.value = token.value
 
 
-class ArrayVar(AST):  # Change to not use an INDEX token but to work like the ASSIGN node
-    # Built using an ARRAY token and an INDEX token
-    def __init__(self, token: Token, index: Token):
-        self.token = token
-        self.value = token.value  # name of array
-        self.index = index.value  # index
-
-
 class IndexVar(AST):
     def __init__(self, token: Token, index: AST):
         self.token = token
+        self.value = token.value
         self.index = index
 
 
@@ -78,14 +71,6 @@ class Type(AST):
     def __init__(self, token: Token):
         self.token = token
         self.value = token.value
-
-
-class ArrayType(AST):  # Change to have a list of 2 Num tokens representing the range
-    def __init__(self, token: Token, range: Token):
-        # Built using a TYPE token and a RANGE token
-        self.token = token
-        self.value = token.value
-        self.range = range.value  # Tuple (min_range, max_range)
 
 
 class RangeType(AST):

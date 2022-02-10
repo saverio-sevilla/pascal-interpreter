@@ -71,7 +71,7 @@ class Interpreter(NodeVisitor):
     def visit_Type(self, node: Type):
         pass
 
-    def visit_ArrayType(self, node: ArrayType):
+    def visit_RangeType(self, node: RangeType):
         pass
 
     def visit_BinOp(self, node: BinOp):
@@ -201,7 +201,7 @@ class Interpreter(NodeVisitor):
         if hasattr(node.left, 'index'):  # Change this method for the new ArrayVar type
             var_name = node.left.value
             var_value = self.visit(node.right)
-            var_index = node.left.index
+            var_index = self.visit(node.left.index)
             ar = self.call_stack.peek()
             ar[var_name].add(var_index, var_value)
 
@@ -219,15 +219,7 @@ class Interpreter(NodeVisitor):
 
         return var_value
 
-    def visit_ArrayVar(self, node: ArrayVar):  # Modify to use an expr() node as the index
-        var_name = node.value
-        index = node.index
-        ar = self.call_stack.peek()
-        var_value = ar.get(var_name).get(index)
-
-        return var_value
-
-    def visit_IndexVar(self, node: ArrayVar):
+    def visit_IndexVar(self, node: IndexVar):
         var_name = node.value
         index_value = self.visit(node.index)
         ar = self.call_stack.peek()
