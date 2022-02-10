@@ -127,19 +127,20 @@ class Interpreter(NodeVisitor):
     def visit_Writeln(self, node: Writeln):
         for subnode in node.node_list:
             print(self.visit(subnode), end = "")
+        print("\n")
 
-    def visit_Readln(self, node: Readln):
+    def visit_Readln(self, node: Readln):   # Change to accept int and float values
         for node in node.node_list:
             if node.token.type == TokenType.STRING:
                 print(self.visit(node), end = "")
             elif hasattr(node, 'index'):
                 var_index = self.visit(node.index)
-                var_value = input()
+                var_value = float(input())
                 ar = self.call_stack.peek()
                 ar[node.token.value].add(var_index, var_value)
             else:
                 ar = self.call_stack.peek()
-                ar[node.token.value] = input()
+                ar[node.token.value] = float(input())
 
     def visit_Condition(self, node: Condition):
         if self.visit(node.condition_node) is True:

@@ -4,7 +4,7 @@ from Lexer import Lexer
 from Interpreter import Interpreter
 
 
-def execute(text):
+def build(text):
 
     lexer = Lexer(text)
     parser = Parser(lexer)
