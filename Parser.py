@@ -24,7 +24,7 @@ class Parser(object):
     def eat(self, token_type):
         # Compare the token_type with the token found, if matched "eat" the token, else raise error
         if self.current_token.type == token_type:
-            print("||| Found token: " ,token_type)
+            # print("||| Found token: " ,token_type)
             self.current_token = self.lexer.get_next_token()
         else:
             print("Expected: ", token_type)
@@ -179,7 +179,7 @@ class Parser(object):
                     self.eat(TokenType.OF)
                     if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
                         # Do something with this!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        token = self.current_token
+                        token = self.current_token # Type token
                         self.eat(self.current_token.type)
                     return RangeType(token, range_low, range_high)
                 else:

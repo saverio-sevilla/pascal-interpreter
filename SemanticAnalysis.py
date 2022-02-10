@@ -215,11 +215,6 @@ class SemanticAnalyzer(NodeVisitor):
 
         if hasattr(node.type_node, 'low_range'):
             type_name = 'ARRAY'
-
-        if hasattr(node.type_node, 'range'):
-            # Array variables will be stored under the type ARRAY
-            # Should be modified to have a reference to the type of the array elements
-            type_name = 'ARRAY'
         else:
             type_name = node.type_node.value
 
@@ -248,6 +243,12 @@ class SemanticAnalyzer(NodeVisitor):
         self.visit(node.left)
 
     def visit_Var(self, node):
+        var_name = node.value
+        var_symbol = self.current_scope.lookup(var_name)
+        if var_symbol is None:
+            self.error(error_code=ErrorCode.ID_NOT_FOUND, token=node.token)
+
+    def visit_IndexVar(self, node):
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
         if var_symbol is None:

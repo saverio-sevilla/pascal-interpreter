@@ -1,7 +1,6 @@
 from SPI import execute
 
-# Add semantic analysis of array variables
-# Add support to use variables as index in arrays
+# Add typechecking
 
 def main():
 
@@ -9,7 +8,7 @@ def main():
 
     PROGRAM Part10;
     VAR
-    number     : INTEGER;
+    number, int     : INTEGER;
     a, b, c, x : INTEGER;
     y          : REAL;
     arr        : ARRAY [2..10] OF INTEGER;
@@ -17,6 +16,7 @@ def main():
     BEGIN {Part10}
         BEGIN
             number := 2;
+            int := 5.5; {Typechecking???}
             a := number;
             b := 10 * a + 10 * number DIV 4;
             c := a - - b;
