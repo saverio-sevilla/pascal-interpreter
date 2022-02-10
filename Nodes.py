@@ -1,10 +1,9 @@
 from Token import Token
 
+# Types of AST (abstract syntax trees) nodes / tipi di nodi AST
 
 class AST(object):
     pass
-
-# Types of AST (abstract syntax trees) nodes / tipi di nodi AST
 
 
 class BinOp(AST):
@@ -69,6 +68,12 @@ class ArrayVar(AST):  # Change to not use an INDEX token but to work like the AS
         self.index = index.value  # index
 
 
+class IndexVar(AST):
+    def __init__(self, token: Token, index: AST):
+        self.token = token
+        self.index = index
+
+
 class Type(AST):
     def __init__(self, token: Token):
         self.token = token
@@ -81,6 +86,13 @@ class ArrayType(AST):  # Change to have a list of 2 Num tokens representing the 
         self.token = token
         self.value = token.value
         self.range = range.value  # Tuple (min_range, max_range)
+
+
+class RangeType(AST):
+    def __init__(self, token: Token, low_range, high_range):
+        self.token = token
+        self.low_range = low_range
+        self.high_range = high_range
 
 
 class Program(AST):

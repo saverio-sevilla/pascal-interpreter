@@ -53,6 +53,13 @@ class Interpreter(NodeVisitor):
 
     def visit_VarDecl(self, node):
 
+        if hasattr(node.type_node, 'low_range'):
+            name = node.var_node.token.value
+            ar = self.call_stack.peek()
+            min_range = node.type_node.low_range
+            max_range = node.type_node.high_range
+            ar[name] = CDict(min_range, max_range)
+
         if hasattr(node.type_node, 'range'):
             name = node.var_node.token.value
             ar = self.call_stack.peek()
@@ -217,6 +224,14 @@ class Interpreter(NodeVisitor):
         index = node.index
         ar = self.call_stack.peek()
         var_value = ar.get(var_name).get(index)
+
+        return var_value
+
+    def visit_IndexVar(self, node: ArrayVar):
+        var_name = node.value
+        index_value = self.visit(node.index)
+        ar = self.call_stack.peek()
+        var_value = ar.get(var_name).get(index_value)
 
         return var_value
 

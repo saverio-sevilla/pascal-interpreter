@@ -163,6 +163,25 @@ class Parser(object):
             self.eat(self.current_token.type)
         elif self.current_token.type == TokenType.ARRAY:  # Modified for arrays
             self.eat(self.current_token.type)
+
+            if self.current_token.type == TokenType.L_SQ_PAREN:
+                self.eat(TokenType.L_SQ_PAREN)
+                if self.current_token.type == TokenType.ID:
+                    range_low = self.current_token.value
+                    self.eat(TokenType.ID)
+                else:
+                    print("ERROR: array range contains a value which is not a numeral")
+                while (self.current_token.type == TokenType.DOT):
+                    self.eat(TokenType.DOT)
+                if self.current_token.type == TokenType.ID:
+                    range_high = self.current_token.value
+                    self.eat(TokenType.ID)
+                else:
+                    print("ERROR: array range contains a value which is not a numeral")
+                self.eat(TokenType.R_SQ_PAREN)
+                return RangeType(token, range_low, range_high)
+
+
             if self.current_token.type == TokenType.RANGE:
                 range_ = self.current_token
                 self.eat(self.current_token.type)
@@ -399,10 +418,17 @@ class Parser(object):
             self.eat(TokenType.STRING)
         else:
             self.eat(TokenType.ID)
+
             # Change this part to not rely on the INDEX token
             # but rather on finding a SQ_PARENT token and calling expr()
             # to find the index
             # the variable expr() is then assigned to the ArrayVar type node
+
+            if self.current_token.type == TokenType.L_SQ_PAREN:
+                self.eat(TokenType.L_SQ_PAREN)
+                index = self.expr()
+                self.eat(TokenType.L_SQ_PAREN)
+                return IndexVar(token, index)
 
             if self.current_token.type == TokenType.INDEX:
                 index = self.current_token

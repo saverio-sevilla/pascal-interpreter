@@ -1,4 +1,5 @@
 # Used to represent static arrays in the stack
+import sys
 
 class CDict:
 
@@ -8,7 +9,9 @@ class CDict:
         self.data = {}
 
     def error(self):
-        print("Error: array index out of bounds")
+        print("Error: array index out of bounds, program terminated")
+        sys.exit()
+
 
     def reshape(self, min_range, max_range):
         self.min_range = min_range

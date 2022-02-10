@@ -46,16 +46,12 @@ class Lexer(object):
             self.advance()
 
     def skip_comment(self):
-
         # Method called if the char { is found, skips until a } is found
         # Metodo per saltare i commenti (tipo: { .... })
 
         while self.current_char != '}':
             self.advance()
         self.advance()  # the closing curly brace
-
-    def array(self):  # Maybe requires modified peek function to find the [ ?
-        pass
 
     def string(self) -> Token:
 
@@ -75,8 +71,8 @@ class Lexer(object):
 
     def number(self) -> Token:
 
-        # Returns an integer or a float from the input
-        # Ritorna un numero intero o decimale dall'input
+        # Returns an integer or a float
+        # Ritorna un numero intero o decimale
 
         token = Token(type=None, value=None, lineno=self.lineno, column=self.column)
 
@@ -102,9 +98,7 @@ class Lexer(object):
         return token
 
     def _id(self) -> Token:
-
         # Finds reserved keywords and identifiers
-
         token = Token(type=None, value=None, lineno=self.lineno, column=self.column)
 
         result = ''
@@ -139,9 +133,11 @@ class Lexer(object):
         return index
 
     def check_if_index(self):
-        peek_pos = self.pos
+        peek_pos = self.pos + 1
         while peek_pos < len(self.text) + 1 and self.text[peek_pos] != ']':
             peek_pos += 1
+            if self.text[peek_pos] == '[':
+                return False
             if self.text[peek_pos] == '.':
                 return False
         return True
@@ -182,6 +178,15 @@ class Lexer(object):
                 self.skip_comment()
                 continue
 
+            if self.current_char == '[':
+                if self.check_if_index():
+                    print("FOUND INDEX")
+
+
+
+
+
+
             if self.current_char == '[':  # Modify
                 self.advance()
                 if self.check_if_index():
@@ -213,29 +218,23 @@ class Lexer(object):
             if self.current_char.isdigit():
                 return self.number()
 
-            '''
-            The operators which use peek() must be ahead in the queue to
-            avoid missing them  (ex. <= and < start with the same character)
-            '''
-
+            # for two character tokens
             try:
                 token_type = TokenType(self.current_char + self.peek())
             except ValueError:
                 pass
             else:
-                # create a token with a single-character lexeme as its value
                 token = Token(
                     type=token_type,
-                    value=token_type.value,  # e.g. ';', '.', etc
+                    value=token_type.value,  # e.g. ':=', '<=', etc
                     lineno=self.lineno,
                     column=self.column,
                 )
                 self.advance(steps=2)
                 return token
 
+            # for single character tokens
             try:
-                # get enum member by value, e.g.
-                # TokenType(';') --> TokenType.SEMI
                 token_type = TokenType(self.current_char)
             except ValueError:
                 # no enum member with value equal to self.current_char

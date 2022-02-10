@@ -136,7 +136,7 @@ class SemanticAnalyzer(NodeVisitor):
         self.current_scope = None
 
     # Visit functions for semantic analyzer
-    # Funzioni visita AST
+    # Funzioni di visita per nodi  AST
 
     def error(self, error_code, token):
         raise SemanticError(
@@ -211,7 +211,10 @@ class SemanticAnalyzer(NodeVisitor):
         # accessed by the interpreter when executing procedure call
         proc_symbol.block_ast = node.block_node
 
-    def visit_VarDecl(self, node):
+    def visit_VarDecl(self, node):      #Must be fixed for new arrays
+
+        if hasattr(node.type_node, 'low_range'):
+            type_name = 'ARRAY'
 
         if hasattr(node.type_node, 'range'):
             # Array variables will be stored under the type ARRAY
