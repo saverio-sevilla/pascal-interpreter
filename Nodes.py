@@ -176,7 +176,11 @@ class Repeat(AST):
         self.repeat_node = repeat_node
         self.condition_node = condition_node
 
-
+class Setlength(AST):
+    def __init__(self, token: Token, var_node: AST, length_node: AST):
+        self.token = token
+        self.var_node = var_node
+        self.length_node = length_node
 
 class Writeln(AST):
     def __init__(self, token: Token, node_list: list):

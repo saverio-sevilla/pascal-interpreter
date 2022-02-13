@@ -165,18 +165,65 @@ class Parser(object):
 
         elif self.current_token.type == TokenType.ARRAY:
             self.eat(self.current_token.type)
-            self.eat(TokenType.L_SQ_PAREN)
-            if self.current_token.type == TokenType.REAL_CONST \
-                    or self.current_token.type == TokenType.INTEGER_CONST:
+
+            if self.current_token.type == TokenType.L_SQ_PAREN:
+                self.eat(TokenType.L_SQ_PAREN)
                 range_low = self.current_token.value
                 self.eat(self.current_token.type)
                 while self.current_token.type == TokenType.DOT:
                     self.eat(TokenType.DOT)
+                range_high = self.current_token.value
+                self.eat(self.current_token.type)
+                self.eat(TokenType.R_SQ_PAREN)
+
+            else:
+                range_low = 0
+                range_high = 0
+
+            self.eat(TokenType.OF)
+            if self.current_token.type \
+                in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
+                # Do something with this!!!!!!!!!!!!!!!!!!!!!!!!!!
+                token = self.current_token  # Type token
+                self.eat(self.current_token.type)
+                return RangeType(token, range_low, range_high)
+            else:
+                print("ERROR: array type not recognised")
+
+        return Type(token)
+
+
+
+    def type_spec2(self):
+        """type_spec : INTEGER | -> Type
+                     | REAL    |
+                     | BOOLEAN |
+                     | STRING  |
+
+                     | ARRAY     -> ArrayType
+        """
+        token = self.current_token
+        if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
+            self.eat(self.current_token.type)
+
+        elif self.current_token.type == TokenType.ARRAY:
+            self.eat(self.current_token.type)
+
+            if self.current_token.type == TokenType.L_SQ_PAREN:
+                self.eat(TokenType.L_SQ_PAREN)
                 if self.current_token.type == TokenType.REAL_CONST \
                         or self.current_token.type == TokenType.INTEGER_CONST:
-                    range_high = self.current_token.value
+                    range_low = self.current_token.value
                     self.eat(self.current_token.type)
-                    self.eat(TokenType.R_SQ_PAREN)
+                    while self.current_token.type == TokenType.DOT:
+                        self.eat(TokenType.DOT)
+                    if self.current_token.type == TokenType.REAL_CONST \
+                            or self.current_token.type == TokenType.INTEGER_CONST:
+                        range_high = self.current_token.value
+                        self.eat(self.current_token.type)
+                        self.eat(TokenType.R_SQ_PAREN)
+
+
                     self.eat(TokenType.OF)
                     if self.current_token.type \
                             in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
@@ -227,6 +274,7 @@ class Parser(object):
                   | writeln_statement
                   | readln_statement
                   | repeat_statement
+                  | setlength_statement
                   | empty
         """
 
@@ -247,6 +295,8 @@ class Parser(object):
             node = self.while_statement()
         elif self.current_token.type == TokenType.REPEAT:
             node = self.repeat_statement()
+        elif self.current_token.type == TokenType.SETLENGTH:
+            node = self.set_length_statement()
         else:
             node = self.empty()
         return node
@@ -278,6 +328,17 @@ class Parser(object):
             token=token,
         )
         return node
+
+    def set_length_statement(self):
+        token = self.current_token
+        self.eat(TokenType.SETLENGTH)
+        self.eat(TokenType.LPAREN)
+        var_node = self.variable()
+        self.eat(TokenType.COMMA)
+        length_node = self.expr()
+        self.eat(TokenType.RPAREN)
+
+        return Setlength(token=token, var_node=var_node, length_node=length_node)
 
     def while_statement(self):
         token = self.current_token

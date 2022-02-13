@@ -4,17 +4,20 @@ number, int     : INTEGER;
 a, b, c, x : INTEGER;
 y          : REAL;
 arr        : ARRAY [2..10] OF INTEGER;
+dyn_arr    : ARRAY OF INTEGER;
 
 BEGIN {Part10}
     BEGIN
         number := 2;
         int := 5.5; {Typechecking???}
         a := number;
+        setlength(dyn_arr, 5);
         b := 10 * a + 10 * number DIV 4;
         c := a - - b;
         arr[2] := 3; // single line comment
         arr[2] := arr[2] + 3;
-        writeln("Hello world: ", b , " ",  arr[2], " world", "\n");
+        arr[3] := 3;
+        writeln("Array val:",  arr[2], " " ,arr[3], "\n");
         repeat
         BEGIN
             b := b + 1;

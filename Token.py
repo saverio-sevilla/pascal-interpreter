@@ -77,6 +77,7 @@ class TokenType(Enum):
     WHILE = 'WHILE'
     REPEAT = 'REPEAT'
     UNTIL = 'UNTIL'
+    SETLENGTH = 'SETLENGTH'
     DO = 'DO'
     END = 'END'
     EOF = 'EOF'

@@ -254,6 +254,7 @@ class SemanticAnalyzer(NodeVisitor):
         if var_symbol is None:
             self.error(error_code=ErrorCode.ID_NOT_FOUND, token=node.token)
 
+
     def visit_ProcedureCall(self, node):
 
         proc_symbol = self.current_scope.lookup(node.proc_name)

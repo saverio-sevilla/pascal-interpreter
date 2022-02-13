@@ -51,6 +51,14 @@ class Interpreter(NodeVisitor):
             self.visit(declaration)
         self.visit(node.compound_statement)
 
+    def visit_Setlength(self, node):
+        name = node.var_node.value
+        length = node.length_node.value
+        print("TEXT1: ", node.var_node.value)
+        print("LENGTH: ", node.length_node.value)
+        ar = self.call_stack.peek()
+        ar[name].initialize(length)
+
     def visit_VarDecl(self, node):
 
         if hasattr(node.type_node, 'low_range'):
@@ -234,6 +242,7 @@ class Interpreter(NodeVisitor):
         var_value = ar.get(var_name).get(index_value)
 
         return var_value
+
 
     def interpret(self):
         tree = self.tree

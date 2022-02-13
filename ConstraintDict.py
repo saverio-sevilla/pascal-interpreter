@@ -3,10 +3,9 @@ import sys
 
 class CDict:
 
-    def __init__(self, min_range, max_range, dynamic=0):
+    def __init__(self, min_range = 0, max_range = 0):
         self.min_range = min_range
         self.max_range = max_range
-        self.dynamic = dynamic
         self.data = {}
 
     def error(self):
@@ -18,10 +17,13 @@ class CDict:
         self.max_range = max_range
         print("Array reshaped to", min_range, max_range)
 
+    def initialize(self, length):
+        self.min_range = 0
+        self.max_range = length
+        self.data = dict.fromkeys(range(length),0)
+        print("Array initialised to length ", length)
+
     def add(self, key, value):
-        if self.dynamic == 1:
-            print("Cannot use dynamic array without initialization")
-            sys.exit()
         if self.max_range >= key >= self.min_range and isinstance(key, int):
             self.data[key] = value
         else:
