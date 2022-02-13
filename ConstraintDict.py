@@ -17,10 +17,11 @@ class CDict:
         self.max_range = max_range
         print("Array reshaped to", min_range, max_range)
 
-    def initialize(self, length):
+    def set_length(self, length):
         self.min_range = 0
         self.max_range = length
-        self.data = dict.fromkeys(range(length),0)
+        if not self.data:
+            self.data = dict.fromkeys(range(length),0)
         print("Array initialised to length ", length)
 
     def add(self, key, value):

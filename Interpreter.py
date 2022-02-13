@@ -57,7 +57,7 @@ class Interpreter(NodeVisitor):
         print("TEXT1: ", node.var_node.value)
         print("LENGTH: ", node.length_node.value)
         ar = self.call_stack.peek()
-        ar[name].initialize(length)
+        ar[name].set_length(length)
 
     def visit_VarDecl(self, node):
 
