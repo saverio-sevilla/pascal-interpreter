@@ -3,8 +3,8 @@ from Errors import LexerError
 
 
 class Lexer(object):
-    def __init__(self, text):
 
+    def __init__(self, text):
         self.text = text
         self.pos = 0    # Position in the text/ Posizione nel testo
         self.current_char = self.text[self.pos]
@@ -12,7 +12,6 @@ class Lexer(object):
         self.column = 1
 
     def error(self):
-
         s = "Lexer error on '{lexeme}' line: {lineno} column: {column}".format(
             lexeme=self.current_char,
             lineno=self.lineno,
@@ -59,9 +58,7 @@ class Lexer(object):
         self.advance()
 
     def string(self) -> Token:
-
         token = Token(type=None, value=None, lineno=self.lineno, column=self.column)
-
         result = ''
 
         while self.current_char != '"' and self.current_char != '\'':
@@ -71,7 +68,6 @@ class Lexer(object):
 
         token.type = TokenType.STRING
         token.value = str(result)
-
         return token
 
     def number(self) -> Token:

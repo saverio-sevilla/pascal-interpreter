@@ -19,7 +19,7 @@ def main():
         except EOFError:
             print("Error opening file")
     else:
-        print("FIle not found")
+        print("File not found")
 
 if __name__ == '__main__':
     main()
