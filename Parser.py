@@ -2,7 +2,7 @@ from Nodes import *
 from Errors import ErrorCode, ParserError
 from Lexer import Lexer
 from Token import TokenType
-
+import logging
 
 ###############
 #   PARSER    #
@@ -24,11 +24,11 @@ class Parser(object):
     def eat(self, token_type):
         # Compare the token_type with the token found, if matched "eat" the token, else raise error
         if self.current_token.type == token_type:
-            # print("||| Found token: " ,token_type)
+            logging.debug(f"Token: {token_type}")
             self.current_token = self.lexer.get_next_token()
         else:
-            print("Expected: ", token_type)
-            print("Found", self.current_token.type)
+            logging.error("Expected token {exp}, found {found}"
+                          .format(exp=token_type, found=self.current_token.type))
             self.error(
                 error_code=ErrorCode.UNEXPECTED_TOKEN,
                 token=self.current_token,
@@ -188,53 +188,10 @@ class Parser(object):
                 self.eat(self.current_token.type)
                 return RangeType(token, range_low, range_high)
             else:
-                print("ERROR: array type not recognised")
+                logging.error("The type of array elements has not been recognised")
 
         return Type(token)
 
-
-
-    def type_spec2(self):
-        """type_spec : INTEGER | -> Type
-                     | REAL    |
-                     | BOOLEAN |
-                     | STRING  |
-
-                     | ARRAY     -> ArrayType
-        """
-        token = self.current_token
-        if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
-            self.eat(self.current_token.type)
-
-        elif self.current_token.type == TokenType.ARRAY:
-            self.eat(self.current_token.type)
-
-            if self.current_token.type == TokenType.L_SQ_PAREN:
-                self.eat(TokenType.L_SQ_PAREN)
-                if self.current_token.type == TokenType.REAL_CONST \
-                        or self.current_token.type == TokenType.INTEGER_CONST:
-                    range_low = self.current_token.value
-                    self.eat(self.current_token.type)
-                    while self.current_token.type == TokenType.DOT:
-                        self.eat(TokenType.DOT)
-                    if self.current_token.type == TokenType.REAL_CONST \
-                            or self.current_token.type == TokenType.INTEGER_CONST:
-                        range_high = self.current_token.value
-                        self.eat(self.current_token.type)
-                        self.eat(TokenType.R_SQ_PAREN)
-
-
-                    self.eat(TokenType.OF)
-                    if self.current_token.type \
-                            in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
-                        # Do something with this!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        token = self.current_token  # Type token
-                        self.eat(self.current_token.type)
-                    return RangeType(token, range_low, range_high)
-                else:
-                    print("ERROR: array range contains a value which is not a numeral")
-
-        return Type(token)
 
     def compound_statement(self) -> Compound:
         """

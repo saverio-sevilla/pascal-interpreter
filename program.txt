@@ -17,7 +17,7 @@ BEGIN {Part10}
         arr[2] := 3; // single line comment
         arr[2] := arr[2] + 3;
         arr[3] := 3;
-        writeln("Array val:",  arr[2], " " ,arr[3], "\n");
+        writeln("Array val 2: ",  arr[2], " Array val 3: " ,arr[3]);
         repeat
         BEGIN
             b := b + 1;

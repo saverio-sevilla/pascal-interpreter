@@ -3,6 +3,7 @@ from Parser import *
 from Token import *
 from Stack import *
 from ConstraintDict import CDict
+import logging
 
 
 ###################
@@ -25,7 +26,7 @@ class Interpreter(NodeVisitor):
 
     def visit_Program(self, node):
         program_name = node.name
-        self.log(f'ENTER: PROGRAM {program_name}')
+        logging.info(f"Entered program: {program_name}")
 
         ar = ActivationRecord(
             name=program_name,
@@ -34,17 +35,14 @@ class Interpreter(NodeVisitor):
         )
         self.call_stack.push(ar)
 
-        self.log(str(self.call_stack))
+        logging.info(self.call_stack)
 
         self.visit(node.block)
 
-        self.log(f'LEAVE: PROGRAM {program_name}')
-        self.log(str(self.call_stack))
-
+        logging.info(f"Left program: {program_name}")
+        logging.info(self.call_stack)
         self.call_stack.pop()
 
-    def log(self, msg):
-        print(msg)
 
     def visit_Block(self, node):
         for declaration in node.declarations:
@@ -54,8 +52,6 @@ class Interpreter(NodeVisitor):
     def visit_Setlength(self, node):
         name = node.var_node.value
         length = node.length_node.value
-        print("TEXT1: ", node.var_node.value)
-        print("LENGTH: ", node.length_node.value)
         ar = self.call_stack.peek()
         ar[name].set_length(length)
 
@@ -68,13 +64,6 @@ class Interpreter(NodeVisitor):
             max_range = node.type_node.high_range
             ar[name] = CDict(min_range, max_range)
 
-        if hasattr(node.type_node, 'range'):
-            name = node.var_node.token.value
-            ar = self.call_stack.peek()
-
-            min_range = node.type_node.range[0]
-            max_range = node.type_node.range[1]
-            ar[name] = CDict(min_range, max_range)
 
     def visit_Type(self, node: Type):
         pass
@@ -198,14 +187,16 @@ class Interpreter(NodeVisitor):
 
         self.call_stack.push(ar)
 
-        self.log(f'ENTER: PROCEDURE {proc_name}')
-        self.log(str(self.call_stack))
+
+        logging.info(f"Entering procedure {proc_name}")
+        logging.info(self.call_stack)
 
         # evaluate procedure body
         self.visit(proc_symbol.block_ast)
 
-        self.log(f'LEAVE: PROCEDURE {proc_name}')
-        self.log(str(self.call_stack))
+        logging.info(f"Exiting procedure {proc_name}")
+        logging.info(self.call_stack)
+
 
         self.call_stack.pop()
 

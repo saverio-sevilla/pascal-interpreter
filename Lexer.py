@@ -75,12 +75,9 @@ class Lexer(object):
         return token
 
     def number(self) -> Token:
-
         # Returns an integer or a float
-        # Ritorna un numero intero o decimale
 
         token = Token(type=None, value=None, lineno=self.lineno, column=self.column)
-
         result = ''
         while self.current_char is not None and self.current_char.isdigit():
             result += self.current_char
@@ -89,17 +86,14 @@ class Lexer(object):
         if self.current_char == '.' and self.peek().isdigit():
             result += self.current_char
             self.advance()
-
             while self.current_char is not None and self.current_char.isdigit():
                 result += self.current_char
                 self.advance()
-
             token.type = TokenType.REAL_CONST
             token.value = float(result)
         else:
             token.type = TokenType.INTEGER_CONST
             token.value = int(result)
-
         return token
 
     def _id(self) -> Token:
@@ -118,7 +112,6 @@ class Lexer(object):
             token.value = result
 
         elif token_type == TokenType.ARRAY:
-            print("Found array")    # Returns token with type ARRAY and value [range min, range max]
             token.type = token_type
             token.value = result.upper()
 
@@ -127,7 +120,6 @@ class Lexer(object):
             token.value = result.upper()
 
         return token
-
 
     def get_next_token(self):
 

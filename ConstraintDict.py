@@ -1,5 +1,6 @@
 # Used to represent static arrays in the stack
 import sys
+import logging
 
 class CDict:
 
@@ -13,28 +14,34 @@ class CDict:
         sys.exit()
 
     def reshape(self, min_range, max_range):
+        if min_range < 0 or max_range < 0:
+            logging.error("Array bounds are not valid")
+            sys.exit()
         self.min_range = min_range
         self.max_range = max_range
-        print("Array reshaped to", min_range, max_range)
+        logging.info("Array resized with bounds {b1}:{b2}".format(b1=min_range, b2=max_range))
 
     def set_length(self, length):
         self.min_range = 0
         self.max_range = length
         if not self.data:
             self.data = dict.fromkeys(range(length),0)
-        print("Array initialised to length ", length)
+            logging.info("Array initialised to size {length}".format(length=length))
+
 
     def add(self, key, value):
         if self.max_range >= key >= self.min_range and isinstance(key, int):
             self.data[key] = value
         else:
-            self.error()
+            logging.error("Attempted to assign an array value out of bounds")
+            sys.exit()
 
     def get(self, key):
         if self.max_range >= key >= self.min_range and isinstance(key, int):
             return self.data[key]
         else:
-            self.error()
+            logging.error("Attempted to access an array value out of bounds")
+            sys.exit()
 
     def __str__(self):
         return str(self.data)

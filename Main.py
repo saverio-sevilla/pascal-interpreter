@@ -1,5 +1,8 @@
 from SPI import build
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
 # Add typechecking
 # Add const and type declarations
@@ -13,7 +16,7 @@ def main():
             program = f.read()
             build(program)
             f.close()
-        except:
+        except EOFError:
             print("Error opening file")
     else:
         print("FIle not found")

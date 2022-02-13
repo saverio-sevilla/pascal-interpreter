@@ -1,4 +1,5 @@
 from Errors import SemanticError, ErrorCode
+import logging
 
 
 #####################################
@@ -17,7 +18,8 @@ class NodeVisitor(object):
         return visitor(node)
 
     def generic_visit(self, node):
-        raise Exception('No visit_{} method'.format(type(node).__name__))
+        logging.warning(f"No visit_{type(node).__name__} method found")
+        raise Exception()
 
 
 class Symbol(object):
@@ -88,7 +90,7 @@ class ScopedSymbolTable(object):
         self.insert(BuiltinTypeSymbol('STRING'))
         self.insert(BuiltinTypeSymbol('ARRAY'))
 
-    def __str__(self):  # Print function for scope tables
+    def __str__(self):
         h1 = 'SCOPE (SCOPED SYMBOL TABLE)'
         lines = ['\n', h1, '=' * len(h1)]
         for header_name, header_value in (
@@ -111,12 +113,12 @@ class ScopedSymbolTable(object):
     __repr__ = __str__
 
     def insert(self, symbol):
-        print('Insert: %s' % symbol.name)
+        logging.info(f"Inserted symbol {symbol.name}")
         symbol.scope_level = self.scope_level
         self._symbols[symbol.name] = symbol
 
     def lookup(self, name, current_scope_only=False):
-        print('Lookup: %s. (Scope name: %s)' % (name, self.scope_name))
+        logging.info(f"Lookup: {name} (Scope: {self.scope_name})")
         # 'symbol' is either an instance of the Symbol class or None
         symbol = self._symbols.get(name)
 
@@ -151,7 +153,7 @@ class SemanticAnalyzer(NodeVisitor):
         self.visit(node.compound_statement)
 
     def visit_Program(self, node):
-        print('ENTER scope: global')
+        logging.info("Entered global scope")
         global_scope = ScopedSymbolTable(
             scope_name='global',
             scope_level=1,
@@ -163,10 +165,10 @@ class SemanticAnalyzer(NodeVisitor):
         # visit subtree
         self.visit(node.block)
 
-        print(global_scope)
+        logging.debug(global_scope)
 
         self.current_scope = self.current_scope.enclosing_scope
-        print('LEAVE scope: global')
+        logging.info("Leaving global scope")
 
     def visit_Compound(self, node):
         for child in node.children:
@@ -184,8 +186,8 @@ class SemanticAnalyzer(NodeVisitor):
         proc_symbol = ProcedureSymbol(proc_name)
         self.current_scope.insert(proc_symbol)
 
-        # self.log(f'ENTER scope: {proc_name}')
-        # Scope for parameters and local variables
+        logging.info("Entered procedure scope {name}".format(name=proc_name))
+
         procedure_scope = ScopedSymbolTable(
             scope_name=proc_name,
             scope_level=self.current_scope.scope_level + 1,
@@ -203,15 +205,16 @@ class SemanticAnalyzer(NodeVisitor):
 
         self.visit(node.block_node)
 
-        #self.log(procedure_scope)
 
         self.current_scope = self.current_scope.enclosing_scope
-        #self.log(f'LEAVE scope: {proc_name}')
+
+        logging.info("Exiting procedure scope {name}".format(name=proc_name))
+        logging.info("Procedure scope {scope}".format(scope=procedure_scope))
 
         # accessed by the interpreter when executing procedure call
         proc_symbol.block_ast = node.block_node
 
-    def visit_VarDecl(self, node):      #Must be fixed for new arrays
+    def visit_VarDecl(self, node):
 
         if hasattr(node.type_node, 'low_range'):
             type_name = 'ARRAY'
@@ -219,14 +222,12 @@ class SemanticAnalyzer(NodeVisitor):
             type_name = node.type_node.value
 
         type_symbol = self.current_scope.lookup(type_name)
-        print("SYMBOL: ", type_symbol)
+        logging.info("Found symbol: {name}".format(name=type_symbol))
 
         # We have all the information we need to create a variable symbol.
         # Create the symbol and insert it into the symbol table.
         var_name = node.var_node.value
         var_symbol = VarSymbol(var_name, type_symbol)
-
-        print(node.type_node.token)
 
         # Signal error if the table has a symbol  with the same name
 
@@ -254,12 +255,11 @@ class SemanticAnalyzer(NodeVisitor):
         if var_symbol is None:
             self.error(error_code=ErrorCode.ID_NOT_FOUND, token=node.token)
 
-
     def visit_ProcedureCall(self, node):
 
         proc_symbol = self.current_scope.lookup(node.proc_name)
 
-        print("Proc_symbol: ", proc_symbol)
+        logging.info("Procedure call:{name}".format(name=proc_symbol))
         # accessed by the interpreter when executing procedure call
         node.proc_symbol = proc_symbol
 
