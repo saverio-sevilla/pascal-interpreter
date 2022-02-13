@@ -12,10 +12,15 @@ BEGIN {Part10}
         a := number;
         b := 10 * a + 10 * number DIV 4;
         c := a - - b;
-        arr[2] := 3;
+        arr[2] := 3; // single line comment
         arr[2] := arr[2] + 3;
         writeln("Hello world: ", b , " ",  arr[2], " world", "\n");
-        readln("Input: ", arr[a]);
+        repeat
+        BEGIN
+            b := b + 1;
+            writeln(b);
+        END
+        until (b > 35);
 END;
 x := 11;
 y := 20 / 7 + 3.14;

@@ -75,6 +75,8 @@ class TokenType(Enum):
     WRITELN = 'WRITELN'
     READLN = 'READLN'
     WHILE = 'WHILE'
+    REPEAT = 'REPEAT'
+    UNTIL = 'UNTIL'
     DO = 'DO'
     END = 'END'
     EOF = 'EOF'

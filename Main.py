@@ -3,7 +3,6 @@ import os
 
 # Add typechecking
 # Add const and type declarations
-# Let readln accept different types of values
 
 def main():
 

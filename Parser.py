@@ -166,20 +166,22 @@ class Parser(object):
         elif self.current_token.type == TokenType.ARRAY:
             self.eat(self.current_token.type)
             self.eat(TokenType.L_SQ_PAREN)
-            print("Current token type:" ,self.current_token.type)
-            if self.current_token.type == TokenType.REAL_CONST or self.current_token.type == TokenType.INTEGER_CONST:
+            if self.current_token.type == TokenType.REAL_CONST \
+                    or self.current_token.type == TokenType.INTEGER_CONST:
                 range_low = self.current_token.value
                 self.eat(self.current_token.type)
                 while self.current_token.type == TokenType.DOT:
                     self.eat(TokenType.DOT)
-                if self.current_token.type == TokenType.REAL_CONST or self.current_token.type == TokenType.INTEGER_CONST:
+                if self.current_token.type == TokenType.REAL_CONST \
+                        or self.current_token.type == TokenType.INTEGER_CONST:
                     range_high = self.current_token.value
                     self.eat(self.current_token.type)
                     self.eat(TokenType.R_SQ_PAREN)
                     self.eat(TokenType.OF)
-                    if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
+                    if self.current_token.type \
+                            in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
                         # Do something with this!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        token = self.current_token # Type token
+                        token = self.current_token  # Type token
                         self.eat(self.current_token.type)
                     return RangeType(token, range_low, range_high)
                 else:
@@ -222,8 +224,9 @@ class Parser(object):
                   | assignment_statement
                   | while_statement
                   | if_statement
-                  | write_statement
-                  | read_statement
+                  | writeln_statement
+                  | readln_statement
+                  | repeat_statement
                   | empty
         """
 
@@ -242,6 +245,8 @@ class Parser(object):
             node = self.conditional_statement()
         elif self.current_token.type == TokenType.WHILE:
             node = self.while_statement()
+        elif self.current_token.type == TokenType.REPEAT:
+            node = self.repeat_statement()
         else:
             node = self.empty()
         return node
@@ -281,6 +286,15 @@ class Parser(object):
         do_node = self.do_statement()
 
         return While(token=token, condition_node=condition_node, do_node=do_node)
+
+    def repeat_statement(self):
+        token = self.current_token
+        self.eat(TokenType.REPEAT)
+        repeat_node = self.statement()
+        self.eat(TokenType.UNTIL)
+        condition_node = self.expr()
+
+        return Repeat(token=token, repeat_node=repeat_node, condition_node=condition_node)
 
     def do_statement(self):
         token = self.current_token

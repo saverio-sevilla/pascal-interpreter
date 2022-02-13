@@ -152,6 +152,11 @@ class Interpreter(NodeVisitor):
         while self.visit(node.condition_node) is True:
             self.visit(node.do_node)
 
+    def visit_Repeat(self, node: Repeat):
+        self.visit(node.repeat_node)
+        while self.visit(node.condition_node) is False:
+            self.visit(node.repeat_node)
+
     def visit_Do(self, node: Do):
         self.visit(node.child)
 

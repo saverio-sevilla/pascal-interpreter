@@ -170,6 +170,14 @@ class While(AST):
         self.do_node = do_node
 
 
+class Repeat(AST):
+    def __init__(self, token: Token, repeat_node: AST, condition_node: AST):
+        self.token = token
+        self.repeat_node = repeat_node
+        self.condition_node = condition_node
+
+
+
 class Writeln(AST):
     def __init__(self, token: Token, node_list: list):
         self.token = token

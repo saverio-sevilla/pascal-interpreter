@@ -53,6 +53,11 @@ class Lexer(object):
             self.advance()
         self.advance()  # the closing curly brace
 
+    def skip_single_line_comment(self):
+        while self.current_char != '\n':
+            self.advance()
+        self.advance()
+
     def string(self) -> Token:
 
         token = Token(type=None, value=None, lineno=self.lineno, column=self.column)
@@ -137,6 +142,10 @@ class Lexer(object):
             if self.current_char == '{':
                 self.advance()
                 self.skip_comment()
+                continue
+
+            if self.current_char == '/' and self.peek() == '/':
+                self.skip_single_line_comment()
                 continue
 
             if self.current_char == '"' or self.current_char == '\'':  # For the print function
