@@ -4,6 +4,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
+# Add functions
 # Add typechecking
 # Add const and type declarations
 

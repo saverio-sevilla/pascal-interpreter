@@ -120,22 +120,6 @@ class ProcedureCall(AST):
         self.proc_symbol = None
 
 
-class FunctionDecl(AST):
-    def __init__(self, proc_name: str, formal_params: list, block_node: Block, return_type: Type):
-        self.proc_name = proc_name
-        self.formal_params = formal_params
-        self.block_node = block_node
-        self.return_type = return_type
-
-
-class FunctionCall(AST):  # Check for reference to symbol
-    def __init__(self, func_name: str, actual_params: list, token: Token):
-        self.func_name = func_name
-        self.actual_params = actual_params
-        self.token = token
-
-        self.func_symbol = None
-
 
 class Then(AST):
     def __init__(self, token: Token, child: AST):

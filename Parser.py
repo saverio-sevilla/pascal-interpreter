@@ -286,6 +286,8 @@ class Parser(object):
         )
         return node
 
+
+
     def set_length_statement(self):
         token = self.current_token
         self.eat(TokenType.SETLENGTH)

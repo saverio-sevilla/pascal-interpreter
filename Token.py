@@ -72,6 +72,7 @@ class TokenType(Enum):
     BEGIN = 'BEGIN'
     VAR = 'VAR'
     PROCEDURE = 'PROCEDURE'
+    FUNCTION = 'FUNCTION'
     WRITELN = 'WRITELN'
     READLN = 'READLN'
     WHILE = 'WHILE'

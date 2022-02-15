@@ -204,8 +204,6 @@ class SemanticAnalyzer(NodeVisitor):
             proc_symbol.formal_params.append(var_symbol)
 
         self.visit(node.block_node)
-
-
         self.current_scope = self.current_scope.enclosing_scope
 
         logging.info("Exiting procedure scope {name}".format(name=proc_name))
