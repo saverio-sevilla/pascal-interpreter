@@ -12,15 +12,9 @@ def main():
 
     path = "program.txt"
     if os.path.isfile(path):
-        try:
-            f = open(path, "r")
+        with open(path) as f:
             program = f.read()
             build(program)
-            f.close()
-        except EOFError:
-            print("Error opening file")
-    else:
-        print("File not found")
 
 if __name__ == '__main__':
     main()
