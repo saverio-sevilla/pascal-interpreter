@@ -4,40 +4,20 @@
 
 from enum import Enum
 
-
-class CallStack:
-    def __init__(self):
-        self._records = []
-
-    def push(self, ar):
-        self._records.append(ar)
-
-    def pop(self):
-        return self._records.pop()
-
-    def peek(self):
-        return self._records[-1]
-
-    def __str__(self):
-        s = '\n'.join(repr(ar) for ar in reversed(self._records))
-        s = f'CALL STACK\n{s}\n'
-        return s
-
-    def __repr__(self):
-        return self.__str__()
-
-
 class ARType(Enum):
     PROGRAM   = 'PROGRAM'
     PROCEDURE = 'PROCEDURE'
     FUNCTION  = 'FUNCTION'
 
 
-class ActivationRecord:
-    def __init__(self, name, type, nesting_level):
+class Frame(object):
+    def __init__(self, name: str, type: ARType, nesting_level):
+        # Change: nesting_level not set in new version
+        # Change: add enclosing frame
         self.name = name
         self.type = type
         self.nesting_level = nesting_level
+        self.return_value = None
         self.members = {}
 
     def __setitem__(self, key, value):
@@ -65,3 +45,28 @@ class ActivationRecord:
 
     def __repr__(self):
         return self.__str__()
+
+
+class CallStack(object):
+    def __init__(self):
+        self.frames = []
+
+    def push(self, ar):  # change methods
+        self.frames.append(ar)
+
+    def pop(self):
+        return self.frames.pop()
+
+    def peek(self):
+        if len(self.frames) is 0:
+            return None
+        return self.frames[-1]
+
+    def __str__(self):
+        s = '\n'.join(repr(ar) for ar in reversed(self.frames))
+        s = f'CALL STACK\n{s}\n'
+        return s
+
+    def __repr__(self):
+        return self.__str__()
+

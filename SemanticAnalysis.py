@@ -23,22 +23,16 @@ class NodeVisitor(object):
 
 
 class Symbol(object):
+
     def __init__(self, name, type=None):
         self.name = name
         self.type = type
         self.scope_level = 0
 
-
-class VarSymbol(Symbol):
-
-    def __init__(self, name, type):
-        super().__init__(name, type)
-
     def __str__(self):
-        return "<{class_name}(name='{name}', type='{type}')>".format(
+        return "{class_name} symbol, name = '{name}'>".format(
             class_name=self.__class__.__name__,
             name=self.name,
-            type=self.type,
         )
 
     __repr__ = __str__
@@ -56,6 +50,21 @@ class BuiltinTypeSymbol(Symbol):
             class_name=self.__class__.__name__,
             name=self.name,
         )
+
+
+class VarSymbol(Symbol):
+
+    def __init__(self, name, type):
+        super().__init__(name, type)
+
+    def __str__(self):
+        return "<{class_name}(name='{name}', type='{type}')>".format(
+            class_name=self.__class__.__name__,
+            name=self.name,
+            type=self.type,
+        )
+
+    __repr__ = __str__
 
 
 class ProcedureSymbol(Symbol):

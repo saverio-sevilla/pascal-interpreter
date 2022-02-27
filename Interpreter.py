@@ -28,7 +28,7 @@ class Interpreter(NodeVisitor):
         program_name = node.name
         logging.info(f"Entered program: {program_name}")
 
-        ar = ActivationRecord(
+        ar = Frame(
             name=program_name,
             type=ARType.PROGRAM,
             nesting_level=1,
@@ -173,7 +173,7 @@ class Interpreter(NodeVisitor):
         proc_name = node.proc_name
         proc_symbol = node.proc_symbol
 
-        ar = ActivationRecord(
+        ar = Frame(
             name=proc_name,
             type=ARType.PROCEDURE,
             nesting_level=proc_symbol.scope_level + 1,

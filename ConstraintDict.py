@@ -2,6 +2,7 @@
 import sys
 import logging
 
+
 class CDict:
 
     def __init__(self, min_range = 0, max_range = 0):
@@ -19,21 +20,20 @@ class CDict:
             sys.exit()
         self.min_range = min_range
         self.max_range = max_range
-        logging.info("Array resized with bounds {b1}:{b2}".format(b1=min_range, b2=max_range))
+        logging.debug("Array resized with bounds {b1}:{b2}".format(b1=min_range, b2=max_range))
 
     def set_length(self, length):
         self.min_range = 0
         self.max_range = length
         if not self.data:
             self.data = dict.fromkeys(range(length),0)
-            logging.info("Array initialised to size {length}".format(length=length))
-
+            logging.debug("Array initialised to size {length}".format(length=length))
 
     def add(self, key, value):
         if self.max_range >= key >= self.min_range and isinstance(key, int):
             self.data[key] = value
         else:
-            logging.error("Attempted to assign an array value out of bounds")
+            logging.error("Attempted to assign to an array value out of bounds")
             sys.exit()
 
     def get(self, key):
@@ -45,3 +45,4 @@ class CDict:
 
     def __str__(self):
         return str(self.data)
+
