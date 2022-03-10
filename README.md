@@ -23,6 +23,14 @@ To be implemented in the future:
 
 ## Examples
 
+### Example 1: variables and writeln function
+
+This simple program defines 3 integer values in the VAR section, initializes them in a BEGIN-END block, then prints them to screen using the writeln function.
+Both single line comments (which start with //) and comment blocks (which are enclosed in curly braces) can be used. The latter kind can span multiple lines.
+Currently the interpreter supports the creating of variables in the VAR section but not their initialization. 
+
+The writeln() function is mostly a wrapper over the Python print statement, it supports the printing of multiple comma separated strings and variables. 
+
 ```
 Program Test;
 VAR
