@@ -79,7 +79,7 @@ The program above produces as output, predictably:
 str1: Hello world
 str2: Hello world
 ```
-### readln and floating point numbers
+### Readln and floating point numbers
 The readln function accept one variable as parameter and prompts the user to enter a value, which is stores inside the value. 
 This program will prompt the user to enter a float and subsequently print it using writeln. 
 
@@ -98,3 +98,39 @@ BEGIN {Test}
     END;
 END. {Test}
 ```
+
+### Loops and conditionals
+
+This simple program shows the use of looping and conditional statements with this interpreter, currently it supports if-else statements, while statements and do-repeat statements. 
+A particularity in the syntax is that the BEGIN-END block following an IF statement has a semicolon only at the end of the last block. So a complete if-else statement will have a semicolon at the end of the second block. This is so the parser can differentiate between IF and IF-ELSE statements.
+
+```
+Program Test;
+VAR
+a, b, c : REAL;
+BEGIN {Test}
+    BEGIN
+        a := 5;
+        b := 5;
+        c := 10;
+        WHILE(c > 1)
+        DO
+            BEGIN
+                writeln(c);
+                c := c - 1;
+            END;
+
+        IF (c = 0)
+        THEN
+            BEGIN
+                writeln("c is zero");
+            END
+        ELSE
+            BEGIN
+                writeln("c is not zero");
+            END;
+    END;
+END. {Test}
+```
+
+The above program will print the value of c from 10 until 1 is reached, the while loop condition will then be false and the program will just to the correct conditional statement, in this case the ELSE branch, printing "c is not zero". 
