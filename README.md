@@ -79,3 +79,22 @@ The program above produces as output, predictably:
 str1: Hello world
 str2: Hello world
 ```
+### readln and floating point numbers
+The readln function accept one variable as parameter and prompts the user to enter a value, which is stores inside the value. 
+This program will prompt the user to enter a float and subsequently print it using writeln. 
+
+```
+Program Test;
+VAR
+a, b, c : REAL;
+
+BEGIN {Test}
+    BEGIN
+        a := 2.2;
+        b := 3.14;
+        writeln("Enter a float: ");
+        readln(c);
+        writeln("c: ", c);
+    END;
+END. {Test}
+```
