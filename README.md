@@ -56,5 +56,26 @@ Value of a: 5
 Value of b: 10
 Value of c: 15
 ```
+### Strings
 
+The interpreter supports basic strings and string assignment.
+```
+Program Test;
+VAR
+a : INTEGER;
+str1, str2 : STRING;
 
+BEGIN {Test}
+    BEGIN
+        str1 := "Hello world";
+        writeln("str1: ", str1 );
+        str2 := str1;
+        writeln("str2: " ,str2);
+    END;
+END. {Test}
+```
+The program above produces as output, predictably:
+```
+str1: Hello world
+str2: Hello world
+```
