@@ -11,7 +11,7 @@ The features supported include:
 - Assignment, logical, arithmetic and relational operators 
 - Conditional statements (if statements and while statements)
 - Procedures
-- Arrays, limited to declarations and simple assignment, syntax as in Pascal  (Ex. array [2..3] of integer)
+- Arrays
 - Writeln and readln statements 
 
 To be implemented in the future:
@@ -30,6 +30,8 @@ Both single line comments (which start with //) and comment blocks (which are en
 Currently the interpreter supports the creating of variables in the VAR section but not their initialization. 
 
 The writeln() function is mostly a wrapper over the Python print statement, it supports the printing of multiple comma separated strings and variables. 
+
+Variable names can be upper or lower case, must start with a letter or '\_' and must be unique. 
 
 ```
 Program Test;
