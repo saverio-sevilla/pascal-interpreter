@@ -137,7 +137,7 @@ The above program will print the value of c from 10 until 1 is reached, the whil
 
 ### Static Arrays 
 
-The following program will create an array of integer types and fill it with some values in with a while loop. The values are then printed to the screen (in this case the squares from 0 to 100)
+The following program will create an array of integer types and fill it with some values in with a while loop. The values are then printed to the screen (in this case the squares from 0 to 100). Note that static arrays declared with the syntax 'ARRAY [i..j] OF (type)' should not be resized with the 'setlength()' function. 
 
 ```
 Program Test;
@@ -157,3 +157,27 @@ BEGIN {Test}
     END;
 END. {Test}
 ```
+
+### Dynamic arrays 
+
+The interpreter supports basic dynamic arrays created as 'ARRAY OF (type)' and initialized at runtime with 'setlength(array_name, length)'
+The method 'setlength' can be called more than once on the same array but may lead to memory leaks. 
+'''
+Program Test;
+VAR
+i: INTEGER;
+dyn_arr : ARRAY OF INTEGER;
+BEGIN {Test}
+    BEGIN
+        i := 0;
+        setlength(dyn_arr, 10);
+        WHILE (i <= 10)
+        DO
+        BEGIN
+            dyn_arr[i] := i * i * i;
+            writeln("The value of dyn_arr[",i, "] is: " , dyn_arr[i]);
+            i := i + 1;
+        END;
+    END;
+END. {Test}
+'''
