@@ -134,3 +134,26 @@ END. {Test}
 ```
 
 The above program will print the value of c from 10 until 1 is reached, the while loop condition will then be false and the program will just to the correct conditional statement, in this case the ELSE branch, printing "c is not zero". 
+
+### Static Arrays 
+
+The following program will create an array of integer types and fill it with some values in with a while loop. The values are then printed to the screen (in this case the squares from 0 to 100)
+
+```
+Program Test;
+VAR
+a, b, c : REAL;
+arr : ARRAY [0..10] OF INTEGER;
+BEGIN {Test}
+    BEGIN
+        a := 0;
+        WHILE (a <= 10)
+        DO
+        BEGIN
+            arr[a] := a * a;
+            writeln("The value of arr[",a, "] is: " , arr[a]);
+            a := a + 1;
+        END;
+    END;
+END. {Test}
+```
