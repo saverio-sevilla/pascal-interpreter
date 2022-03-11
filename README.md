@@ -162,7 +162,7 @@ END. {Test}
 
 The interpreter supports basic dynamic arrays created as 'ARRAY OF (type)' and initialized at runtime with 'setlength(array_name, length)'
 The method 'setlength' can be called more than once on the same array but may lead to memory leaks. 
-'''
+```
 Program Test;
 VAR
 i: INTEGER;
@@ -180,4 +180,4 @@ BEGIN {Test}
         END;
     END;
 END. {Test}
-'''
+```
