@@ -1,4 +1,4 @@
-from Errors import SemanticError, ErrorCode
+from src.Errors import SemanticError, ErrorCode
 import logging
 
 

@@ -1,5 +1,5 @@
 from Token import TokenType, Token, RESERVED_KEYWORDS
-from Errors import LexerError
+from src.Errors import LexerError
 
 
 class Lexer(object):

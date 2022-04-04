@@ -1,5 +1,5 @@
 from Nodes import *
-from Errors import ErrorCode, ParserError
+from src.Errors import ErrorCode, ParserError
 from Lexer import Lexer
 from Token import TokenType
 import logging
@@ -334,6 +334,7 @@ class Parser(object):
         then_node = self.then_statement()
         else_node = None
 
+        print("Token after if: ", self.current_token.type);
         if self.current_token.type == TokenType.ELSE:
             else_node = self.else_statement()
 

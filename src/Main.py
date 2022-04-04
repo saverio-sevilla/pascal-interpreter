@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
 def main():
 
-    path = "program.txt"
+    path = "program2.txt"
     if os.path.isfile(path):
         with open(path) as f:
             program = f.read()

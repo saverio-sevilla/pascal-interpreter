@@ -24,7 +24,7 @@ BEGIN {Part10}
             writeln(b);
         END
         until (b > 35);
-END;
+    END;
 x := 11;
 y := 20 / 7 + 3.14;
 {writeln('a = ', a);}

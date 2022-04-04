@@ -2,7 +2,7 @@ from SemanticAnalysis import NodeVisitor
 from Parser import *
 from Token import *
 from Stack import *
-from ConstraintDict import CDict
+from src.ConstraintDict import CDict
 import logging
 
 
