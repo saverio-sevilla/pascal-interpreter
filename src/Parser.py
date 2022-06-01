@@ -1,5 +1,5 @@
 from Nodes import *
-from src.Errors import ErrorCode, ParserError
+from Errors import ErrorCode, ParserError
 from Lexer import Lexer
 from Token import TokenType
 import logging
