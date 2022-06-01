@@ -14,7 +14,7 @@ class Parser(object):
         self.lexer = lexer
         self.current_token = self.lexer.get_next_token()
 
-    def error(self, error_code, token):
+    def error(self, error_code: ErrorCode, token: Token):
         raise ParserError(
             error_code=error_code,
             token=token,
@@ -75,7 +75,7 @@ class Parser(object):
             declarations.append(proc_decl)
         return declarations
 
-    def procedure_declaration(self):
+    def procedure_declaration(self) -> ProcedureDecl:
         """procedure_declaration :
              PROCEDURE ID (LPAREN formal_parameter_list RPAREN)? SEMI block SEMI
         """
@@ -95,7 +95,7 @@ class Parser(object):
         self.eat(TokenType.SEMI)
         return proc_decl
 
-    def formal_parameters(self) -> list:
+    def formal_parameters(self) -> list[Param]:
         """ formal_parameters : ID (COMMA ID)* COLON type_spec """
         param_nodes = []
 
@@ -116,7 +116,7 @@ class Parser(object):
 
         return param_nodes
 
-    def formal_parameter_list(self) -> list:
+    def formal_parameter_list(self) -> list[Param]:
         """ formal_parameter_list : formal_parameters
                                   | formal_parameters SEMI formal_parameter_list
         """
@@ -151,13 +151,12 @@ class Parser(object):
         ]
         return var_declarations
 
-    def type_spec(self):
+    def type_spec(self) -> Type:
         """type_spec : INTEGER | -> Type
                      | REAL    |
                      | BOOLEAN |
                      | STRING  |
-
-                     | ARRAY     -> ArrayType
+                     | ARRAY    |
         """
         token = self.current_token
         if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
@@ -181,9 +180,7 @@ class Parser(object):
                 range_high = 0
 
             self.eat(TokenType.OF)
-            if self.current_token.type \
-                in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
-                # Do something with this!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if self.current_token.type in (TokenType.INTEGER, TokenType.REAL, TokenType.BOOL, TokenType.STRING):
                 token = self.current_token  # Type token
                 self.eat(self.current_token.type)
                 return RangeType(token, range_low, range_high)
@@ -191,7 +188,6 @@ class Parser(object):
                 logging.error("The type of array elements has not been recognised")
 
         return Type(token)
-
 
     def compound_statement(self) -> Compound:
         """
@@ -207,7 +203,7 @@ class Parser(object):
 
         return root
 
-    def statement_list(self) -> list:
+    def statement_list(self) -> list[AST]:
         """
         statement_list : statement
                        | statement SEMI statement_list
@@ -258,7 +254,7 @@ class Parser(object):
             node = self.empty()
         return node
 
-    def proccall_statement(self):
+    def proccall_statement(self) -> ProcedureCall:
 
         """proccall_statement : ID LPAREN (expr (COMMA expr)*)? RPAREN"""
 
@@ -287,8 +283,7 @@ class Parser(object):
         return node
 
 
-
-    def set_length_statement(self):
+    def set_length_statement(self) -> Setlength:
         token = self.current_token
         self.eat(TokenType.SETLENGTH)
         self.eat(TokenType.LPAREN)
@@ -299,7 +294,7 @@ class Parser(object):
 
         return Setlength(token=token, var_node=var_node, length_node=length_node)
 
-    def while_statement(self):
+    def while_statement(self) -> While:
         token = self.current_token
         self.eat(TokenType.WHILE)
         condition_node = self.expr()
@@ -307,7 +302,7 @@ class Parser(object):
 
         return While(token=token, condition_node=condition_node, do_node=do_node)
 
-    def repeat_statement(self):
+    def repeat_statement(self) -> Repeat:
         token = self.current_token
         self.eat(TokenType.REPEAT)
         repeat_node = self.statement()
@@ -316,13 +311,13 @@ class Parser(object):
 
         return Repeat(token=token, repeat_node=repeat_node, condition_node=condition_node)
 
-    def do_statement(self):
+    def do_statement(self) -> Do:
         token = self.current_token
         self.eat(TokenType.DO)
         child = self.statement()
         return Do(token=token, child=child)
 
-    def conditional_statement(self):
+    def conditional_statement(self) -> Condition:
 
         """
         if_statement : IF condition THEN statement (ELSE statement)?
@@ -334,27 +329,27 @@ class Parser(object):
         then_node = self.then_statement()
         else_node = None
 
-        print("Token after if: ", self.current_token.type);
+        print("Token after if: ", self.current_token.type)
         if self.current_token.type == TokenType.ELSE:
             else_node = self.else_statement()
 
         return Condition(token=token, condition_node=condition_node, then_node=then_node, else_node=else_node)
 
-    def then_statement(self):
+    def then_statement(self) -> Then:
 
         token = self.current_token
         self.eat(TokenType.THEN)
         child = self.statement()
         return Then(token=token, child=child)
 
-    def else_statement(self):
+    def else_statement(self) -> Else:
 
         token = self.current_token
         self.eat(TokenType.ELSE)
         child = self.statement()
         return Else(token=token, child=child)
 
-    def writeln_statement(self):
+    def writeln_statement(self) -> Writeln:
 
         node_list = []
         token = self.current_token
@@ -372,7 +367,7 @@ class Parser(object):
         self.eat(TokenType.RPAREN)
         return Writeln(token=token, node_list=node_list)
 
-    def readln_statement(self):
+    def readln_statement(self) -> Readln:
         node_list = []
         token = self.current_token
         self.eat(TokenType.READLN)
@@ -389,7 +384,7 @@ class Parser(object):
 
         return Readln(token=token, node_list=node_list)
 
-    def assignment_statement(self):
+    def assignment_statement(self) -> Assign:
         """
         assignment_statement : variable ASSIGN expr
         """
@@ -400,7 +395,7 @@ class Parser(object):
         node = Assign(left, token, right)
         return node
 
-    def variable(self):
+    def variable(self) -> Var | IndexVar:
         """
         variable : ID
         """
@@ -419,7 +414,8 @@ class Parser(object):
 
         return Var(token)
 
-    def empty(self):
+    @staticmethod
+    def empty() -> AST:
         return NoOp()
 
 ########################################
@@ -481,7 +477,7 @@ class Parser(object):
 
         return node
 
-    def third_priority(self):
+    def third_priority(self) -> AST:
         """
         Operators: PLUS, MINUS
         """
@@ -498,7 +494,7 @@ class Parser(object):
 
         return node
 
-    def second_priority(self):
+    def second_priority(self) -> BinOp:
         """Operators: MULT, DIV, INTEGER_DIV"""
         node = self.first_priority()
 
@@ -515,7 +511,7 @@ class Parser(object):
 
         return node
 
-    def first_priority(self):
+    def first_priority(self) -> UnaryOp | Num | Boolean | String | AST:
         '''
         Unary op: PLUS, MINUS, NOT, PARENTHESIS, also returns NUM and BOOL tokens
         '''

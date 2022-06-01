@@ -4,7 +4,7 @@ from src.Errors import LexerError
 
 class Lexer(object):
 
-    def __init__(self, text):
+    def __init__(self, text: str):
         self.text = text
         self.pos = 0    # Position in the text/ Posizione nel testo
         self.current_char = self.text[self.pos]
@@ -19,7 +19,7 @@ class Lexer(object):
         )
         raise LexerError(message=s)
 
-    def advance(self, steps=1):
+    def advance(self, steps: int = 1) -> None:
         # Method to advance in the text, setting current_char to the new character
         # Metodo per avanzare di un carattere nel testo, current_char viene assegnato al nuovo carattere
 
@@ -33,18 +33,18 @@ class Lexer(object):
             self.current_char = self.text[self.pos]
             self.column += steps
 
-    def peek(self):
+    def peek(self) -> None | str:
         peek_pos = self.pos + 1
         if peek_pos > len(self.text) - 1:
             return None
         else:
             return self.text[peek_pos]
 
-    def skip_whitespace(self):
+    def skip_whitespace(self) -> None:
         while self.current_char is not None and self.current_char.isspace():
             self.advance()
 
-    def skip_comment(self):
+    def skip_comment(self) -> None:
         # Method called if the char { is found, skips until a } is found
         # Metodo per saltare i commenti (tipo: { .... })
 
@@ -52,7 +52,7 @@ class Lexer(object):
             self.advance()
         self.advance()  # the closing curly brace
 
-    def skip_single_line_comment(self):
+    def skip_single_line_comment(self) -> None:
         while self.current_char != '\n':
             self.advance()
         self.advance()
@@ -117,7 +117,7 @@ class Lexer(object):
 
         return token
 
-    def get_next_token(self):
+    def get_next_token(self) -> Token:
 
         # Main function to identify tokens / Funzione principale per identificare i token
 
